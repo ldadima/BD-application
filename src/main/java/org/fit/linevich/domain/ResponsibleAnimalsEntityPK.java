@@ -1,45 +1,17 @@
 package org.fit.linevich.domain;
 
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import java.io.Serializable;
-import java.util.Objects;
 
+@Data
 public class ResponsibleAnimalsEntityPK implements Serializable {
+    @Id
+    @Column(name = "employer_id")
     private int employerId;
+    @Id
+    @Column(name = "animal_id")
     private int animalId;
-
-    @Column(name = "employer_id", nullable = false)
-    @Id
-    public int getEmployerId() {
-        return employerId;
-    }
-
-    public void setEmployerId(int employerId) {
-        this.employerId = employerId;
-    }
-
-    @Column(name = "animal_id", nullable = false)
-    @Id
-    public int getAnimalId() {
-        return animalId;
-    }
-
-    public void setAnimalId(int animalId) {
-        this.animalId = animalId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ResponsibleAnimalsEntityPK that = (ResponsibleAnimalsEntityPK) o;
-        return employerId == that.employerId &&
-                animalId == that.animalId;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(employerId, animalId);
-    }
 }

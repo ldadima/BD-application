@@ -5,7 +5,7 @@ public enum Season {
     SPRING("Весна"),
     SUMMER("Лето"),
     AUTUMN("Осень");
-    private String name;
+    private final String name;
 
     Season(String name) {
         this.name = name;

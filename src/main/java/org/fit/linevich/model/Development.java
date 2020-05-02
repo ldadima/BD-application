@@ -4,14 +4,14 @@ public enum Development {
     DEVELOPED("Развит"),
     UNDERDEVELOPED("Недоразвит");
 
-    public String getDevelop() {
-        return develop;
-    }
-
-    private String develop;
+    private final String develop;
 
     Development(String develop) {
         this.develop = develop;
+    }
+
+    public String getDevelop() {
+        return develop;
     }
 
     public static Development findByName(String name){

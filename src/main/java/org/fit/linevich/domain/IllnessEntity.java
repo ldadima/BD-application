@@ -1,61 +1,30 @@
 package org.fit.linevich.domain;
 
+import lombok.Data;
+
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.util.Collection;
-import java.util.Objects;
 
+@Data
 @Entity
 @Table(name = "illnesses", schema = "public", catalog = "bd_zoo")
 public class IllnessEntity {
-    private Integer id;
-    private String name;
-    private Collection<IllnessAnimalsEntity> illnessAnimalsById;
-
     @Id
-    @Column(name = "id", nullable = false)
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    @GeneratedValue(generator = "illness_gen")
+    @SequenceGenerator(name = "illness_gen", sequenceName = "illnesses_id_seq", allocationSize = 1)
+    @Column(name = "id")
+    private Integer id;
     @Basic
     @Column(name = "name", nullable = false, length = -1)
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        IllnessEntity that = (IllnessEntity) o;
-        return id == that.id &&
-                Objects.equals(name, that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
-    }
-
-    @OneToMany(mappedBy = "illnessesByIllnessId")
-    public Collection<IllnessAnimalsEntity> getIllnessAnimalsById() {
-        return illnessAnimalsById;
-    }
-
-    public void setIllnessAnimalsById(Collection<IllnessAnimalsEntity> illnessAnimalsById) {
-        this.illnessAnimalsById = illnessAnimalsById;
-    }
+    private String name;
+    @OneToMany( cascade = CascadeType.ALL, mappedBy = "illnessId")
+    private Collection<IllnessAnimalsEntity> illnessAnimalsById;
 }

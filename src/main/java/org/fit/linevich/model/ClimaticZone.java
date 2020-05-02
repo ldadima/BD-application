@@ -14,7 +14,7 @@ public enum ClimaticZone {
     TUNDRA("Тундра"),
     POLAR_DESERT("Полярные пустыни");
 
-    private String zone;
+    private final String zone;
 
     ClimaticZone(String zone) {
         this.zone = zone;

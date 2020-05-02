@@ -3,7 +3,7 @@ package org.fit.linevich.model;
 public enum AnimalType {
     PREDATOR("Хищник"),
     HERBIVORE("Травоядное");
-    private String type;
+    private final String type;
 
     AnimalType(String type) {
         this.type = type;

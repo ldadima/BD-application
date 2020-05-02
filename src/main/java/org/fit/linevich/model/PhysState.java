@@ -4,7 +4,7 @@ public enum  PhysState {
     SICK("Болен"),
     HEALTHY("Здоров");
 
-    private String state;
+    private final String state;
 
     PhysState(String state) {
         this.state = state;

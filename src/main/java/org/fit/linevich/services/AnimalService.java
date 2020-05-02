@@ -2,6 +2,7 @@ package org.fit.linevich.services;
 
 import org.fit.linevich.domain.AnimalEntity;
 import org.fit.linevich.mapper.CustomDataMapper;
+import org.fit.linevich.model.Season;
 import org.fit.linevich.views.Animal;
 import org.fit.linevich.repositories.AnimalsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,4 +42,5 @@ public class AnimalService {
         animalsRepo.deleteById(id);
     }
 
+    // public void addFeedEven(int id, )
 }

@@ -7,7 +7,7 @@ public enum EmployeeCategory {
     BUILDER("Строитель-ремонтник"),
     TRAINER("Дрессировщик");
 
-    private String category;
+    private final String category;
 
     EmployeeCategory(String category) {
         this.category = category;
