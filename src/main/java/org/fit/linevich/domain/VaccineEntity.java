@@ -19,13 +19,13 @@ import java.sql.Date;
 public class VaccineEntity {
     @Id
     @Column(name = "vaccine_id", nullable = false)
-    private int vaccineId;
+    private Integer vaccineId;
     @Basic
     @Column(name = "medicine_name", nullable = false, length = -1)
     private String medicineName;
     @Basic
     @Column(name = "dose", nullable = false)
-    private int dose;
+    private Integer dose;
     @Basic
     @Column(name = "date_vaccine", nullable = false)
     private Date dateVaccine;

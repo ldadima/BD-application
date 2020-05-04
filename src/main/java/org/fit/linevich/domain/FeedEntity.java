@@ -7,7 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -31,10 +30,10 @@ public class FeedEntity {
     private String type;
     @Basic
     @Column(name = "stock", nullable = false)
-    private int stock;
+    private Integer stock;
     @Basic
     @Column(name = "volume_independent_production", nullable = false)
-    private int volumeIndependentProduction;
+    private Integer volumeIndependentProduction;
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "feedId")
     private Collection<EvenDayRationEntity> evenDayRationsById;
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "feedId")

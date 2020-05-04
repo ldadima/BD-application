@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class Zoo {
-    private int id;
+    private Integer id;
     @NotNull
     private String name;
 }

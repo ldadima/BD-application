@@ -10,7 +10,7 @@ public enum Development {
         this.develop = develop;
     }
 
-    public String getDevelop() {
+    public String getName() {
         return develop;
     }
 

@@ -21,10 +21,10 @@ public class Employee {
     @NotNull
     private EmployeeCategory category;
     @NotNull
-    private int durationWork;
+    private Integer durationWork;
     @NotNull
     @Size(min = 18, max =100)
-    private int age;
+    private Integer age;
     @NotNull
     private Gender gender;
     @NotNull
@@ -32,10 +32,10 @@ public class Employee {
     private BigDecimal salary;
 
     public String getCategory() {
-        return category.getCategory();
+        return category.getName();
     }
 
     public String getGender() {
-        return gender.getGender();
+        return gender.getName();
     }
 }

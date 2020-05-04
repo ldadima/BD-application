@@ -1,38 +1,30 @@
 package org.fit.linevich.services;
 
-import org.fit.linevich.domain.FeedEntity;
+import lombok.AllArgsConstructor;
 import org.fit.linevich.domain.IllnessEntity;
 import org.fit.linevich.mapper.CustomDataMapper;
-import org.fit.linevich.views.Feed;
-import org.fit.linevich.views.Illness;
 import org.fit.linevich.repositories.IllnessesRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.fit.linevich.views.Illness;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class IllnessesService {
 
-    @Autowired
-    private IllnessesRepo illnessesRepo;
-    @Autowired
-    private CustomDataMapper customDataMapper;
+    private final IllnessesRepo illnessesRepo;
+    private final CustomDataMapper customDataMapper;
 
     public List<Illness> showAll(){
         Iterable<IllnessEntity> illnesses = illnessesRepo.findAll();
-        List<Illness> illnessDTOS = new ArrayList<>();
-        for(IllnessEntity illnessEntity :illnesses){
-            illnessDTOS.add(customDataMapper.toIllnessView(illnessEntity));
-        }
-        return illnessDTOS;
+        return customDataMapper.toIllnessListView(illnesses);
     }
 
     public Illness findById(int id){
         Optional<IllnessEntity> illnessEntity = illnessesRepo.findById(id);
-        return illnessEntity.map(entity -> customDataMapper.toIllnessView(entity)).orElse(null);
+        return illnessEntity.map(customDataMapper::toIllnessView).orElse(null);
     }
 
     public void deleteById(int id){
@@ -40,7 +32,19 @@ public class IllnessesService {
     }
 
     public void create(Illness illness){
-        illnessesRepo.save(customDataMapper.toIllnessEntity(illness));
+        IllnessEntity illnessEntity = new IllnessEntity();
+        customDataMapper.toIllnessEntity(illness, illnessEntity);
+        illnessesRepo.save(illnessEntity);
     }
 
+    public boolean update(Illness illness){
+        IllnessEntity illnessInBd = illnessesRepo.findById(illness.getId())
+                .orElse(null);
+        if (illnessInBd == null){
+            return false;
+        }
+        customDataMapper.toIllnessEntity(illness, illnessInBd);
+        illnessesRepo.save(illnessInBd);
+        return true;
+    }
 }

@@ -13,7 +13,7 @@ public enum EmployeeCategory {
         this.category = category;
     }
 
-    public String getCategory() {
+    public String getName() {
         return category;
     }
 

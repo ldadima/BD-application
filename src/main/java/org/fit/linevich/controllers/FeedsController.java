@@ -2,16 +2,16 @@ package org.fit.linevich.controllers;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.AllArgsConstructor;
 import org.fit.linevich.services.FeedsService;
-import org.fit.linevich.views.Animal;
 import org.fit.linevich.views.Feed;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,10 +21,10 @@ import java.util.List;
 
 @Api
 @Controller
+@AllArgsConstructor
 @RequestMapping("/feeds")
 public class FeedsController {
-    @Autowired
-    private FeedsService feedsService;
+    private final FeedsService feedsService;
 
     @GetMapping("/showAll")
     @ApiOperation("Show all feeds in zoo")
@@ -49,6 +49,16 @@ public class FeedsController {
     public ResponseEntity<String> createFeed(@Valid @RequestBody Feed feed){
         feedsService.create(feed);
         return ResponseEntity.status(HttpStatus.CREATED).body("Feed added");
+    }
+
+    @PutMapping("/updateFeed")
+    @ApiOperation("Update feed")
+    public ResponseEntity<String> updateFeed(@Valid @RequestBody Feed feed){
+        if(feedsService.update(feed)) {
+            return ResponseEntity.status(HttpStatus.OK).body("Feed updated");
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("Feed not found");
+        }
     }
 
     @DeleteMapping("/deleteFeedById")

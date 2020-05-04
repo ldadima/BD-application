@@ -10,8 +10,8 @@ import java.io.Serializable;
 public class VaccineEntityPK implements Serializable {
     @Column(name = "vaccine_id", nullable = false)
     @Id
-    private int vaccineId;
+    private Integer vaccineId;
     @Id
     @Column(name = "animal_id")
-    private int animalId;
+    private Integer animalId;
 }

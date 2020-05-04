@@ -2,16 +2,16 @@ package org.fit.linevich.controllers;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.AllArgsConstructor;
 import org.fit.linevich.services.IllnessesService;
-import org.fit.linevich.views.Animal;
 import org.fit.linevich.views.Illness;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,10 +21,10 @@ import java.util.List;
 
 @Api
 @Controller
+@AllArgsConstructor
 @RequestMapping("/illnesses")
 public class IllnessesController {
-    @Autowired
-    private IllnessesService illnessesService;
+    private final IllnessesService illnessesService;
 
     @GetMapping("/showAll")
     @ApiOperation("Show all illnesses(sorry that they are)")
@@ -49,6 +49,16 @@ public class IllnessesController {
     public ResponseEntity<String> createIllness(@Valid @RequestBody Illness illness){
         illnessesService.create(illness);
         return ResponseEntity.status(HttpStatus.CREATED).body("Illness added");
+    }
+
+    @PutMapping("/updateIllness")
+    @ApiOperation("Update illness")
+    public ResponseEntity<String> updateIllness(@Valid @RequestBody Illness illness){
+        if(illnessesService.update(illness)) {
+            return ResponseEntity.status(HttpStatus.OK).body("Illness updated");
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("Illness not found");
+        }
     }
 
     @DeleteMapping("/deleteIllnessById")

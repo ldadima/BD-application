@@ -19,7 +19,7 @@ import java.sql.Date;
 public class CellsAnimalsEntity {
     @Id
     @Column(name = "cell_id")
-    private int cellId;
+    private Integer cellId;
     @Basic
     @Column(name = "date_begin", nullable = false)
     private Date dateBegin;
@@ -28,7 +28,7 @@ public class CellsAnimalsEntity {
     private Date dateEnd;
     @Basic
     @Column(name = "heating", nullable = false)
-    private boolean heating;
+    private Boolean heating;
     @Id
     @ManyToOne
     @JoinColumn(name = "animal_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)

@@ -17,5 +17,5 @@ public class ProductiveAgeEntity {
     private String kind;
     @Basic
     @Column(name = "age", nullable = false)
-    private int age;
+    private Integer age;
 }

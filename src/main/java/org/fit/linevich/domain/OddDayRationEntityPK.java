@@ -1,7 +1,6 @@
 package org.fit.linevich.domain;
 
 import lombok.Data;
-import org.fit.linevich.model.Season;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -11,8 +10,8 @@ import java.io.Serializable;
 public class OddDayRationEntityPK implements Serializable {
     @Column(name = "season", nullable = false)
     @Id
-    private Season season;
+    private String season;
     @Id
     @Column(name = "animal_id")
-    private int animalId;
+    private Integer animalId;
 }

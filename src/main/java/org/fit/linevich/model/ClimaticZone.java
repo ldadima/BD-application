@@ -20,7 +20,7 @@ public enum ClimaticZone {
         this.zone = zone;
     }
 
-    public String getZone() {
+    public String getName() {
         return zone;
     }
 

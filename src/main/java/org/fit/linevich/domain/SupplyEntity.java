@@ -29,7 +29,7 @@ public class SupplyEntity {
     private BigDecimal price;
     @Basic
     @Column(name = "feed_amount", nullable = false)
-    private int feedAmount;
+    private Integer feedAmount;
     @Basic
     @Column(name = "date_supply", nullable = false)
     private Date dateSupply;

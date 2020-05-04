@@ -10,8 +10,8 @@ import java.io.Serializable;
 public class ProvidersSpecializationEntityPK implements Serializable {
     @Id
     @Column(name = "feed_id")
-    private int feedId;
+    private Integer feedId;
     @Id
     @Column(name = "provider_id")
-    private int providerId;
+    private Integer providerId;
 }

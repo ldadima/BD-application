@@ -1,23 +1,21 @@
 package org.fit.linevich.domain;
 
 import lombok.Data;
+import org.fit.linevich.converters.EmployeeCategoryConverter;
+import org.fit.linevich.converters.GenderConverter;
 import org.fit.linevich.model.EmployeeCategory;
 import org.fit.linevich.model.Gender;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.PostLoad;
-import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Collection;
 
@@ -40,20 +38,18 @@ public class EmployeeEntity {
     @Column(name = "patronymic", nullable = false, length = -1)
     private String patronymic;
     @Basic
+    @Convert(converter = EmployeeCategoryConverter.class)
     @Column(name = "category", nullable = false)
-    private String categoryString;
-    @Transient
     private EmployeeCategory category;
     @Basic
     @Column(name = "duration_work", nullable = false)
-    private int durationWork;
+    private Integer durationWork;
     @Basic
     @Column(name = "age", nullable = false)
-    private int age;
+    private Integer age;
     @Basic
     @Column(name = "gender", nullable = false)
-    private String genderString;
-    @Transient
+    @Convert(converter = GenderConverter.class)
     private Gender gender;
     @Basic
     @Column(name = "salary", nullable = false, precision = 0)
@@ -63,31 +59,19 @@ public class EmployeeEntity {
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "employerId")
     private Collection<ResponsibleAnimalsEntity> responsibleAnimalsById;
 
-    public String getCategory() {
-        return category.getCategory();
-    }
-
-    public void setCategory(String category) {
-        this.category = EmployeeCategory.findByName(category);
-    }
-
     public String getGender() {
-        return gender.getGender();
+        return gender.getName();
     }
 
     public void setGender(String gender) {
         this.gender = Gender.findByName(gender);
     }
 
-    @PrePersist
-    void pre(){
-        this.categoryString = category.getCategory();
-        this.genderString = gender.getGender();
+    public String getCategory() {
+        return category.getName();
     }
 
-    @PostLoad
-    void post(){
-        setCategory(categoryString);
-        setGender(genderString);
+    public void setCategory(String category) {
+        this.category = EmployeeCategory.findByName(category);
     }
 }

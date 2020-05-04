@@ -10,8 +10,8 @@ import java.io.Serializable;
 public class AccessAnimalsEntityPK implements Serializable {
     @Id
     @Column(name = "employer_id")
-    private int employerId;
+    private Integer employerId;
     @Id
     @Column(name = "animal_id")
-    private int animalId;
+    private Integer animalId;
 }

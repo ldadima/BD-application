@@ -13,5 +13,5 @@ public class AnimalCompatibilityEntityPK implements Serializable {
     private String animalKind;
     @Id
     @Column(name = "animal_id")
-    private int animalId;
+    private Integer animalId;
 }

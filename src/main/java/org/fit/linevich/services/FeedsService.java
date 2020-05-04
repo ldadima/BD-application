@@ -1,37 +1,29 @@
 package org.fit.linevich.services;
 
-import org.fit.linevich.domain.EmployeeEntity;
+import lombok.AllArgsConstructor;
 import org.fit.linevich.domain.FeedEntity;
 import org.fit.linevich.mapper.CustomDataMapper;
-import org.fit.linevich.views.Employee;
-import org.fit.linevich.views.Feed;
 import org.fit.linevich.repositories.FeedsRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.fit.linevich.views.Feed;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class FeedsService {
-    @Autowired
-    private FeedsRepo feedsRepo;
-    @Autowired
-    private CustomDataMapper customDataMapper;
+    private final FeedsRepo feedsRepo;
+    private final CustomDataMapper customDataMapper;
 
     public List<Feed> showAll(){
         Iterable<FeedEntity> feeds = feedsRepo.findAll();
-        List<Feed> feedDTOS = new ArrayList<>();
-        for (FeedEntity feedEntity :feeds){
-            feedDTOS.add(customDataMapper.toFeedView(feedEntity));
-        }
-        return feedDTOS;
+        return customDataMapper.toFeedListView(feeds);
     }
 
     public Feed findById(int id){
         Optional<FeedEntity> feedEntity = feedsRepo.findById(id);
-        return feedEntity.map(entity -> customDataMapper.toFeedView(entity)).orElse(null);
+        return feedEntity.map(customDataMapper::toFeedView).orElse(null);
     }
 
     public void deleteById(int id){
@@ -39,6 +31,19 @@ public class FeedsService {
     }
 
     public void create(Feed feed){
-        feedsRepo.save(customDataMapper.toFeedEntity(feed));
+        FeedEntity feedEntity = new FeedEntity();
+        customDataMapper.toFeedEntity(feed, feedEntity);
+        feedsRepo.save(feedEntity);
+    }
+
+    public boolean update(Feed feed){
+        FeedEntity feedInBd = feedsRepo.findById(feed.getId())
+                .orElse(null);
+        if (feedInBd == null){
+            return false;
+        }
+        customDataMapper.toFeedEntity(feed, feedInBd);
+        feedsRepo.save(feedInBd);
+        return true;
     }
 }

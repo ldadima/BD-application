@@ -1,29 +1,26 @@
 package org.fit.linevich.domain;
 
 import lombok.Data;
+import org.fit.linevich.converters.AnimalTypeConverter;
+import org.fit.linevich.converters.ClimaticZoneConverter;
+import org.fit.linevich.converters.GenderConverter;
+import org.fit.linevich.converters.PhysStateConverter;
 import org.fit.linevich.model.AnimalType;
 import org.fit.linevich.model.ClimaticZone;
 import org.fit.linevich.model.Gender;
 import org.fit.linevich.model.PhysState;
-import org.fit.linevich.views.Animal;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PostLoad;
-import javax.persistence.PostPersist;
-import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.sql.Date;
 import java.util.Collection;
 
@@ -43,33 +40,28 @@ public class AnimalEntity {
     @Column(name = "kind_animal", nullable = false, length = -1)
     private String kindAnimal;
     @Basic
-
     @Column(name = "type", nullable = false)
-    private String typeString;
-    @Transient
+    @Convert(converter = AnimalTypeConverter.class)
     private AnimalType type;
 
     @Basic
     @Column(name = "climatic_habitat", nullable = false)
-    private String zoneString;
-    @Transient
+    @Convert(converter = ClimaticZoneConverter.class)
     private ClimaticZone climaticHabitat;
 
     @Basic
     @Column(name = "gender", nullable = false)
-    private String genderString;
-    @Transient
+    @Convert(converter = GenderConverter.class)
     private Gender gender;
 
     @Basic
     @Column(name = "physical_state", nullable = false)
-    private String stateString;
-    @Transient
+    @Convert(converter = PhysStateConverter.class)
     private PhysState physicalState;
 
     @Basic
     @Column(name = "progeny", nullable = false)
-    private int progeny;
+    private Integer progeny;
     @Basic
     @Column(name = "birthday", nullable = false)
     private Date birthday;
@@ -81,30 +73,30 @@ public class AnimalEntity {
     private String departureReason;
     @Basic
     @Column(name = "need_relocation", nullable = false)
-    private boolean needRelocation;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "animalId")
+    private Boolean needRelocation;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<AccessAnimalsEntity> accessAnimalsById;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "animalId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<AnimalCompatibilityEntity> animalCompatibilitiesById;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "animalId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<AnimalReceiptEntity> animalReceiptsById;
-    // @OneToMany( cascade = CascadeType.ALL, mappedBy = "animalId")
-    // private Collection<CellsAnimalsEntity> cellsAnimalsById;
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "animalId")
+    private Collection<CellsAnimalsEntity> cellsAnimalsById;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<EvenDayRationEntity> evenDayRationsById;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "animalId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<IllnessAnimalsEntity> illnessAnimalsById;
-    @OneToOne( cascade = CascadeType.ALL, mappedBy = "animal")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "animal")
     private MedCardEntity medCardById;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "animalId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<OddDayRationEntity> oddDayRationsById;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "animalId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<ResponsibleAnimalsEntity> responsibleAnimalsById;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "animalId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<VaccineEntity> vaccinesById;
 
     public String getType() {
-        return type.getType();
+        return type.getName();
     }
 
     public void setType(String type) {
@@ -112,7 +104,7 @@ public class AnimalEntity {
     }
 
     public String getClimaticHabitat() {
-        return climaticHabitat.getZone();
+        return climaticHabitat.getName();
     }
 
     public void setClimaticHabitat(String climaticHabitat) {
@@ -120,7 +112,7 @@ public class AnimalEntity {
     }
 
     public String getGender() {
-        return gender.getGender();
+        return gender.getName();
     }
 
     public void setGender(String gender) {
@@ -128,26 +120,10 @@ public class AnimalEntity {
     }
 
     public String getPhysicalState() {
-        return physicalState.getState();
+        return physicalState.getName();
     }
 
     public void setPhysicalState(String physicalState) {
         this.physicalState = PhysState.findByName(physicalState);
-    }
-
-    @PrePersist
-    void pre(){
-        this.typeString = type.getType();
-        this.zoneString = climaticHabitat.getZone();
-        this.genderString = gender.getGender();
-        this.stateString = physicalState.getState();
-    }
-
-    @PostLoad
-    void post(){
-        setType(typeString);
-        setClimaticHabitat(zoneString);
-        setGender(genderString);
-        setPhysicalState(stateString);
     }
 }
