@@ -22,4 +22,9 @@ public enum Season {
         }
         throw new IllegalArgumentException(String.format("Error season for %s", name));
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

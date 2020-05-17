@@ -20,4 +20,9 @@ public enum AnimalType {
         }
         throw new IllegalArgumentException(String.format("Error animal type for %s", name));
     }
+
+    @Override
+    public String toString() {
+        return type;
+    }
 }

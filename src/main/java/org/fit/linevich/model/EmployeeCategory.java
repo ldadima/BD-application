@@ -24,4 +24,9 @@ public enum EmployeeCategory {
         }
         throw new IllegalArgumentException(String.format("Error employee category %s", name));
     }
+
+    @Override
+    public String toString() {
+        return category;
+    }
 }

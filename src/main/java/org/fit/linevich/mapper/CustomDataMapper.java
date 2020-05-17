@@ -3,12 +3,14 @@ package org.fit.linevich.mapper;
 import org.fit.linevich.domain.AnimalEntity;
 import org.fit.linevich.domain.EmployeeEntity;
 import org.fit.linevich.domain.FeedEntity;
+import org.fit.linevich.domain.FeedNotNeedEntity;
 import org.fit.linevich.domain.IllnessEntity;
 import org.fit.linevich.domain.ProviderEntity;
 import org.fit.linevich.domain.ZooEntity;
 import org.fit.linevich.views.Animal;
 import org.fit.linevich.views.Employee;
 import org.fit.linevich.views.Feed;
+import org.fit.linevich.views.FeedNotNeedQuery;
 import org.fit.linevich.views.Illness;
 import org.fit.linevich.views.Provider;
 import org.fit.linevich.views.Zoo;
@@ -76,6 +78,8 @@ public abstract class CustomDataMapper {
     public abstract Zoo toZooView(ZooEntity zooEntity);
 
     public abstract List<Zoo> toZooListView(Iterable<ZooEntity> zooEntity);
+
+    public abstract List<FeedNotNeedQuery> toFeedQuery(List<FeedNotNeedEntity> resultNative);
 
     // AnimalType toAnimalType(String name) {
     //     return AnimalType.findByName(name);

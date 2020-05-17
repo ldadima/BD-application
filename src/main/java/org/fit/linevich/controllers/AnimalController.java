@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.fit.linevich.services.AnimalService;
 import org.fit.linevich.views.Animal;
 import org.fit.linevich.views.AnimalCellQuery;
+import org.fit.linevich.views.FullInfoAnimalQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -98,6 +99,30 @@ public class AnimalController {
     @ResponseBody
     public ResponseEntity<List<Animal>> needWarmCellAnimals() {
         List<Animal> answer = animalService.needWarmCellAnimals();
+        return ResponseEntity.status(HttpStatus.OK).body(answer);
+    }
+
+    @GetMapping("/needFeed")
+    @ApiOperation("Show animals need given feed in given season")
+    @ResponseBody
+    public ResponseEntity<List<Animal>> needFeed(String feed, String season) {
+        List<Animal> answer = animalService.needFeed(feed, season);
+        return ResponseEntity.status(HttpStatus.OK).body(answer);
+    }
+
+    @GetMapping("/fullInfoByKind")
+    @ApiOperation("Show full info about animal by kind")
+    @ResponseBody
+    public ResponseEntity<List<FullInfoAnimalQuery>> fullInfoByKind(String kind) {
+        List<FullInfoAnimalQuery> answer = animalService.fullInfoByKind(kind);
+        return ResponseEntity.status(HttpStatus.OK).body(answer);
+    }
+
+    @GetMapping("/fullInfoByVaccine")
+    @ApiOperation("Show full info about animal by vaccine")
+    @ResponseBody
+    public ResponseEntity<List<FullInfoAnimalQuery>> fullInfoByVaccine(String vaccine) {
+        List<FullInfoAnimalQuery> answer = animalService.fullInfoByVaccine(vaccine);
         return ResponseEntity.status(HttpStatus.OK).body(answer);
     }
 

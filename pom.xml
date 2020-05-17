@@ -80,9 +80,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.vladmihalcea</groupId>
-            <artifactId>hibernate-types-52</artifactId>
-            <version>2.9.9</version>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>6.4.2</version>
         </dependency>
     </dependencies>
 

@@ -31,4 +31,9 @@ public enum ClimaticZone {
         }
         throw new IllegalArgumentException(String.format("Error climatic zone for %s", name));
     }
+
+    @Override
+    public String toString() {
+        return zone;
+    }
 }

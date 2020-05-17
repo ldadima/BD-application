@@ -7,6 +7,7 @@ import org.fit.linevich.model.ClimaticZone;
 import org.fit.linevich.repositories.AnimalsRepo;
 import org.fit.linevich.views.Animal;
 import org.fit.linevich.views.AnimalCellQuery;
+import org.fit.linevich.views.FullInfoAnimalQuery;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -90,7 +91,7 @@ public class AnimalService {
                                 "  or climatic_habitat = 'Пустыни')" +
                                 "  and (DATE_PART('year', now()) - DATE_PART('year', animals.birthday)) * 12 +" +
                                 "      (DATE_PART('month', now()) - DATE_PART('month', animals.birthday)) = :age",
-                        "animalMapper")
+                        AnimalEntity.class)
                 .setParameter("age", age)
                 .getResultList();
         return customDataMapper.toAnimalListView(animalEntities);
@@ -156,6 +157,64 @@ public class AnimalService {
                         ClimaticZone.DESERT))
                 .getResultList();
         return customDataMapper.toAnimalListView(animalEntities);
+    }
+
+    /**
+     * 10-ый запрос
+     */
+    public List<Animal> needFeed(String feed, String season) {
+        List<AnimalEntity> animalEntities = entityManager.createNativeQuery("select *  " +
+                "from animals  " +
+                "where id in (select (anim_feeds.animal_id)  " +
+                "             from feeds  " +
+                "                    join (select *  " +
+                "                          from even_day_ration  " +
+                "                          union all  " +
+                "                          select *  " +
+                "                          from odd_day_ration)  " +
+                "               as anim_feeds on feeds.id = anim_feeds.feed_id  " +
+                "             where feeds.name = :feed  " +
+                "               and season = :season)", AnimalEntity.class)
+                .setParameter("feed", feed)
+                .setParameter("season", season)
+                .getResultList();
+        return customDataMapper.toAnimalListView(animalEntities);
+    }
+
+    /**
+     * 11-ый запрос
+     */
+    public List<FullInfoAnimalQuery> fullInfoByKind(String kind) {
+        return entityManager
+                .createQuery(
+                        "select new org.fit.linevich.views.FullInfoAnimalQuery(a.name, a.kindAnimal, a.type, a" +
+                                ".climaticHabitat, a.gender, a.physicalState, a.progeny, a.birthday, med.height, med" +
+                                ".weight, v.medicineName, ill.name) from AnimalEntity a " +
+                                "left join MedCardEntity med on med.animal = a " +
+                                "left join IllnessAnimalsEntity ill_a on ill_a.animalId = a " +
+                                "left join IllnessEntity ill on ill = ill_a.illnessId " +
+                                "left join VaccineEntity v on v.animalId = a " +
+                                "where a.kindAnimal = :kind", FullInfoAnimalQuery.class)
+                .setParameter("kind", kind)
+                .getResultList();
+    }
+
+    /**
+     * 11-ый запрос
+     */
+    public List<FullInfoAnimalQuery> fullInfoByVaccine(String vaccine) {
+        return entityManager
+                .createQuery(
+                        "select new org.fit.linevich.views.FullInfoAnimalQuery(a.name, a.kindAnimal, a.type, a" +
+                                ".climaticHabitat, a.gender, a.physicalState, a.progeny, a.birthday, med.height, med" +
+                                ".weight, v.medicineName, ill.name) from AnimalEntity a " +
+                                "left join MedCardEntity med on med.animal = a " +
+                                "left join IllnessAnimalsEntity ill_a on ill_a.animalId = a " +
+                                "left join IllnessEntity ill on ill = ill_a.illnessId " +
+                                "left join VaccineEntity v on v.animalId = a " +
+                                "where v.medicineName = :vaccine", FullInfoAnimalQuery.class)
+                .setParameter("vaccine", vaccine)
+                .getResultList();
     }
 
 }

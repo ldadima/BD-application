@@ -21,4 +21,9 @@ public enum  PhysState {
         }
         throw new IllegalArgumentException(String.format("Error phys state for %s", name));
     }
+
+    @Override
+    public String toString() {
+        return state;
+    }
 }

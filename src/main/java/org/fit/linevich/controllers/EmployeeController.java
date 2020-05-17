@@ -2,7 +2,11 @@ package org.fit.linevich.controllers;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.fit.linevich.converters.EmployeeCategoryConverter;
+import org.fit.linevich.model.EmployeeCategory;
 import org.fit.linevich.services.EmployeeService;
 import org.fit.linevich.views.Employee;
 import org.fit.linevich.views.ResponsibleAnimalQuery;
@@ -17,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.persistence.Convert;
+import javax.persistence.Converter;
 import javax.validation.Valid;
 import java.util.List;
 

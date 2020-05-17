@@ -21,4 +21,9 @@ public enum Gender {
         }
         throw new IllegalArgumentException(String.format("Error gender for %s", name));
     }
+
+    @Override
+    public String toString() {
+        return gender;
+    }
 }

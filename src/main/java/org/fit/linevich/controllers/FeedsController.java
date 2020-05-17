@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.fit.linevich.services.FeedsService;
 import org.fit.linevich.views.Feed;
+import org.fit.linevich.views.FeedNotNeedQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -29,8 +30,26 @@ public class FeedsController {
     @GetMapping("/showAll")
     @ApiOperation("Show all feeds in zoo")
     @ResponseBody
-    public List<Feed> showFeeds() {
-        return feedsService.showAll();
+    public ResponseEntity<List<Feed>> showFeeds() {
+        return ResponseEntity.ok(feedsService.showAll());
+    }
+
+
+    @GetMapping("/producedMyself")
+    @ApiOperation("Show feeds produced by zoo yourself")
+    @ResponseBody
+    public ResponseEntity<List<Feed>> producedYourself() {
+        List<Feed> feeds = feedsService.producedYourself();
+        return ResponseEntity.ok(feeds);
+    }
+
+
+    @GetMapping("/notNeed")
+    @ApiOperation("Show feeds not need for buy")
+    @ResponseBody
+    public ResponseEntity<List<FeedNotNeedQuery>> notNeed() {
+        List<FeedNotNeedQuery> feeds = feedsService.notNeed();
+        return ResponseEntity.ok(feeds);
     }
 
     @GetMapping("/feedById")

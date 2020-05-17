@@ -21,4 +21,9 @@ public enum Development {
         }
         throw new IllegalArgumentException(String.format("Error development for %s", name));
     }
+
+    @Override
+    public String toString() {
+        return develop;
+    }
 }
