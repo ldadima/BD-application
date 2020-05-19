@@ -1,5 +1,8 @@
 package org.fit.linevich.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Season {
     WINTER("Зима"),
     SPRING("Весна"),
@@ -15,6 +18,7 @@ public enum Season {
         return name;
     }
 
+    @JsonCreator
     public static Season findByName(String name){
         for(Season one: values()){
             if(one.name.equals(name))
@@ -24,6 +28,7 @@ public enum Season {
     }
 
     @Override
+    @JsonValue
     public String toString() {
         return name;
     }

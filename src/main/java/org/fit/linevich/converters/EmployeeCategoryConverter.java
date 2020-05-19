@@ -1,26 +1,12 @@
 package org.fit.linevich.converters;
 
 import org.fit.linevich.model.EmployeeCategory;
+import org.springframework.core.convert.converter.Converter;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
-
-@Converter
-public class EmployeeCategoryConverter implements AttributeConverter<EmployeeCategory, String>  {
+public class EmployeeCategoryConverter implements Converter<String, EmployeeCategory> {
 
     @Override
-    public String convertToDatabaseColumn(EmployeeCategory value) {
-        if (value == null) {
-            return null;
-        }
-        return value.getName();
-    }
-
-    @Override
-    public EmployeeCategory convertToEntityAttribute(String value) {
-        if (value == null) {
-            return null;
-        }
-        return EmployeeCategory.findByName(value);
+    public EmployeeCategory convert(String source) {
+        return EmployeeCategory.findByName(source);
     }
 }

@@ -1,26 +1,12 @@
 package org.fit.linevich.converters;
 
 import org.fit.linevich.model.Development;
+import org.springframework.core.convert.converter.Converter;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
-
-@Converter
-public class DevelopmentConverter implements AttributeConverter<Development, String>  {
+public class DevelopmentConverter implements Converter<String, Development> {
 
     @Override
-    public String convertToDatabaseColumn(Development value) {
-        if (value == null) {
-            return null;
-        }
-        return value.getName();
-    }
-
-    @Override
-    public Development convertToEntityAttribute(String value) {
-        if (value == null) {
-            return null;
-        }
-        return Development.findByName(value);
+    public Development convert(String source) {
+        return Development.findByName(source);
     }
 }

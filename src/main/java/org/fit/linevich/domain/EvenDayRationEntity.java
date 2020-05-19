@@ -1,7 +1,7 @@
 package org.fit.linevich.domain;
 
 import lombok.Data;
-import org.fit.linevich.converters.SeasonConverter;
+import org.fit.linevich.converters_for_db.SeasonConverter;
 import org.fit.linevich.model.Season;
 
 import javax.persistence.Basic;

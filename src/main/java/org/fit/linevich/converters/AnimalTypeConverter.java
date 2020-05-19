@@ -1,26 +1,12 @@
 package org.fit.linevich.converters;
 
 import org.fit.linevich.model.AnimalType;
+import org.springframework.core.convert.converter.Converter;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
-
-@Converter
-public class AnimalTypeConverter implements AttributeConverter<AnimalType, String>  {
+public class AnimalTypeConverter implements Converter<String, AnimalType> {
 
     @Override
-    public String convertToDatabaseColumn(AnimalType value) {
-        if (value == null) {
-            return null;
-        }
-        return value.getName();
-    }
-
-    @Override
-    public AnimalType convertToEntityAttribute(String value) {
-        if (value == null) {
-            return null;
-        }
-        return AnimalType.findByName(value);
+    public AnimalType convert(String source) {
+        return AnimalType.findByName(source);
     }
 }

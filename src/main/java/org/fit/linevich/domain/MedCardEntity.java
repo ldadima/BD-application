@@ -1,7 +1,7 @@
 package org.fit.linevich.domain;
 
 import lombok.Data;
-import org.fit.linevich.converters.DevelopmentConverter;
+import org.fit.linevich.converters_for_db.DevelopmentConverter;
 import org.fit.linevich.model.Development;
 
 import javax.persistence.Basic;

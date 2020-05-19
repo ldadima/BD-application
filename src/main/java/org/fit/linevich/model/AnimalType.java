@@ -1,5 +1,8 @@
 package org.fit.linevich.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum AnimalType {
     PREDATOR("Хищник"),
     HERBIVORE("Травоядное");
@@ -13,6 +16,7 @@ public enum AnimalType {
         return type;
     }
 
+    @JsonCreator
     public static AnimalType findByName(String name){
         for(AnimalType one: values()){
             if(one.type.equals(name))
@@ -22,6 +26,7 @@ public enum AnimalType {
     }
 
     @Override
+    @JsonValue
     public String toString() {
         return type;
     }

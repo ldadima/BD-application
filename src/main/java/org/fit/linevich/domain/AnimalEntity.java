@@ -1,10 +1,10 @@
 package org.fit.linevich.domain;
 
 import lombok.Data;
-import org.fit.linevich.converters.AnimalTypeConverter;
-import org.fit.linevich.converters.ClimaticZoneConverter;
-import org.fit.linevich.converters.GenderConverter;
-import org.fit.linevich.converters.PhysStateConverter;
+import org.fit.linevich.converters_for_db.AnimalTypeConverter;
+import org.fit.linevich.converters_for_db.ClimaticZoneConverter;
+import org.fit.linevich.converters_for_db.GenderConverter;
+import org.fit.linevich.converters_for_db.PhysStateConverter;
 import org.fit.linevich.model.AnimalType;
 import org.fit.linevich.model.ClimaticZone;
 import org.fit.linevich.model.Gender;
@@ -94,36 +94,4 @@ public class AnimalEntity {
     private Collection<ResponsibleAnimalsEntity> responsibleAnimalsById;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<VaccineEntity> vaccinesById;
-
-    public String getType() {
-        return type.getName();
-    }
-
-    public void setType(String type) {
-        this.type = AnimalType.findByName(type);
-    }
-
-    public String getClimaticHabitat() {
-        return climaticHabitat.getName();
-    }
-
-    public void setClimaticHabitat(String climaticHabitat) {
-        this.climaticHabitat = ClimaticZone.findByName(climaticHabitat);
-    }
-
-    public String getGender() {
-        return gender.getName();
-    }
-
-    public void setGender(String gender) {
-        this.gender = Gender.findByName(gender);
-    }
-
-    public String getPhysicalState() {
-        return physicalState.getName();
-    }
-
-    public void setPhysicalState(String physicalState) {
-        this.physicalState = PhysState.findByName(physicalState);
-    }
 }

@@ -1,5 +1,8 @@
 package org.fit.linevich.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum  PhysState {
     SICK("Болен"),
     HEALTHY("Здоров");
@@ -14,6 +17,7 @@ public enum  PhysState {
         return state;
     }
 
+    @JsonCreator
     public static PhysState findByName(String name){
         for(PhysState one: values()){
             if(one.state.equals(name))
@@ -23,6 +27,7 @@ public enum  PhysState {
     }
 
     @Override
+    @JsonValue
     public String toString() {
         return state;
     }

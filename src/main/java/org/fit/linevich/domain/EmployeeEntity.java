@@ -1,8 +1,8 @@
 package org.fit.linevich.domain;
 
 import lombok.Data;
-import org.fit.linevich.converters.EmployeeCategoryConverter;
-import org.fit.linevich.converters.GenderConverter;
+import org.fit.linevich.converters_for_db.EmployeeCategoryConverter;
+import org.fit.linevich.converters_for_db.GenderConverter;
 import org.fit.linevich.model.EmployeeCategory;
 import org.fit.linevich.model.Gender;
 
@@ -58,20 +58,4 @@ public class EmployeeEntity {
     private Collection<AccessAnimalsEntity> accessAnimalsById;
     @OneToMany( cascade = CascadeType.ALL, mappedBy = "employerId")
     private Collection<ResponsibleAnimalsEntity> responsibleAnimalsById;
-
-    public String getGender() {
-        return gender.getName();
-    }
-
-    public void setGender(String gender) {
-        this.gender = Gender.findByName(gender);
-    }
-
-    public String getCategory() {
-        return category.getName();
-    }
-
-    public void setCategory(String category) {
-        this.category = EmployeeCategory.findByName(category);
-    }
 }

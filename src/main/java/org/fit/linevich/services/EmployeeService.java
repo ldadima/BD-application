@@ -61,9 +61,9 @@ public class EmployeeService {
     /**
      * 1-ый запрос
      */
-    public List<Employee> findByCategory(String category) {
+    public List<Employee> findByCategory(EmployeeCategory category) {
         List<EmployeeEntity> employees =
-                employeesRepo.getEmployeeEntitiesByCategory(EmployeeCategory.findByName(category));
+                employeesRepo.getEmployeeEntitiesByCategory(category);
         return customDataMapper.toEmployeeListView(employees);
     }
 
@@ -115,7 +115,7 @@ public class EmployeeService {
     /**
      * 3-ий запрос
      */
-    public List<Employee> responsibleAnimal(String kind){
+    public List<Employee> accessAnimal(String kind){
         List<EmployeeEntity> employees =
                 employeesRepo.accessAnimal(kind);
         return customDataMapper.toEmployeeListView(employees);

@@ -1,5 +1,8 @@
 package org.fit.linevich.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum ClimaticZone {
     EQUATORIAL_FOREST("Экваториальный лес"),
     SUBTROPICAL_FOREST("Субтропический лес"),
@@ -24,6 +27,7 @@ public enum ClimaticZone {
         return zone;
     }
 
+    @JsonCreator
     public static ClimaticZone findByName(String name){
         for(ClimaticZone one: values()){
             if(one.zone.equals(name))
@@ -33,6 +37,7 @@ public enum ClimaticZone {
     }
 
     @Override
+    @JsonValue
     public String toString() {
         return zone;
     }

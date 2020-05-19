@@ -1,26 +1,12 @@
 package org.fit.linevich.converters;
 
 import org.fit.linevich.model.Season;
+import org.springframework.core.convert.converter.Converter;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
-
-@Converter
-public class SeasonConverter implements AttributeConverter<Season, String>  {
+public class SeasonConverter implements Converter<String, Season> {
 
     @Override
-    public String convertToDatabaseColumn(Season value) {
-        if (value == null) {
-            return null;
-        }
-        return value.getName();
-    }
-
-    @Override
-    public Season convertToEntityAttribute(String value) {
-        if (value == null) {
-            return null;
-        }
-        return Season.findByName(value);
+    public Season convert(String source) {
+        return Season.findByName(source);
     }
 }

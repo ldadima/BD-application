@@ -1,5 +1,8 @@
 package org.fit.linevich.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Development {
     DEVELOPED("Развит"),
     UNDERDEVELOPED("Недоразвит");
@@ -14,6 +17,7 @@ public enum Development {
         return develop;
     }
 
+    @JsonCreator
     public static Development findByName(String name){
         for(Development one: values()){
             if(one.develop.equals(name))
@@ -23,6 +27,7 @@ public enum Development {
     }
 
     @Override
+    @JsonValue
     public String toString() {
         return develop;
     }

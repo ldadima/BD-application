@@ -1,5 +1,8 @@
 package org.fit.linevich.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum EmployeeCategory {
     VET("Ветеринар"),
     CLEANER("Уборщик"),
@@ -17,6 +20,7 @@ public enum EmployeeCategory {
         return category;
     }
 
+    @JsonCreator
     public static EmployeeCategory findByName(String name){
         for(EmployeeCategory one: values()){
             if(one.category.equals(name))
@@ -26,6 +30,7 @@ public enum EmployeeCategory {
     }
 
     @Override
+    @JsonValue
     public String toString() {
         return category;
     }

@@ -2,10 +2,7 @@ package org.fit.linevich.controllers;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
-import org.fit.linevich.converters.EmployeeCategoryConverter;
 import org.fit.linevich.model.EmployeeCategory;
 import org.fit.linevich.services.EmployeeService;
 import org.fit.linevich.views.Employee;
@@ -21,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.persistence.Convert;
-import javax.persistence.Converter;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -43,7 +38,7 @@ public class EmployeeController {
     @GetMapping("/byCategory")
     @ApiOperation("Show employees by category")
     @ResponseBody
-    public ResponseEntity<List<Employee>> showEmployeesByCategory(String category) {
+    public ResponseEntity<List<Employee>> showEmployeesByCategory(EmployeeCategory category) {
         List<Employee> employees = employeeService.findByCategory(category);
         if (employees.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -91,11 +86,11 @@ public class EmployeeController {
         return ResponseEntity.status(HttpStatus.OK).body(employees);
     }
 
-    @PutMapping("/accessAnimalQuery")
+    @GetMapping("/accessAnimalQuery")
     @ApiOperation("Show employees access for the kind of animal")
     @ResponseBody
-    public ResponseEntity<List<Employee>> showEmployeesResponsibleAnimalQuery(String kindAnimal) {
-        List<Employee> employees = employeeService.responsibleAnimal(kindAnimal);
+    public ResponseEntity<List<Employee>> showEmployeesAccessAnimalQuery(String kindAnimal) {
+        List<Employee> employees = employeeService.accessAnimal(kindAnimal);
         return ResponseEntity.status(HttpStatus.OK).body(employees);
     }
 

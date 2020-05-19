@@ -1,26 +1,12 @@
 package org.fit.linevich.converters;
 
 import org.fit.linevich.model.PhysState;
+import org.springframework.core.convert.converter.Converter;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
-
-@Converter
-public class PhysStateConverter implements AttributeConverter<PhysState, String>  {
+public class PhysStateConverter implements Converter<String, PhysState> {
 
     @Override
-    public String convertToDatabaseColumn(PhysState value) {
-        if (value == null) {
-            return null;
-        }
-        return value.getName();
-    }
-
-    @Override
-    public PhysState convertToEntityAttribute(String value) {
-        if (value == null) {
-            return null;
-        }
-        return PhysState.findByName(value);
+    public PhysState convert(String source) {
+        return PhysState.findByName(source);
     }
 }

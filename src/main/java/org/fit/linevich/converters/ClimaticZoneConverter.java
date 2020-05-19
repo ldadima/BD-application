@@ -1,26 +1,13 @@
 package org.fit.linevich.converters;
 
 import org.fit.linevich.model.ClimaticZone;
+import org.springframework.core.convert.converter.Converter;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
 
-@Converter
-public class ClimaticZoneConverter implements AttributeConverter<ClimaticZone, String>  {
+public class ClimaticZoneConverter implements Converter<String, ClimaticZone> {
 
     @Override
-    public String convertToDatabaseColumn(ClimaticZone value) {
-        if (value == null) {
-            return null;
-        }
-        return value.getName();
-    }
-
-    @Override
-    public ClimaticZone convertToEntityAttribute(String value) {
-        if (value == null) {
-            return null;
-        }
-        return ClimaticZone.findByName(value);
+    public ClimaticZone convert(String source) {
+        return ClimaticZone.findByName(source);
     }
 }

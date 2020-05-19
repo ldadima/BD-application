@@ -1,5 +1,8 @@
 package org.fit.linevich.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Gender {
     MALE("Мужской"),
     FEMALE("Женский");
@@ -14,6 +17,7 @@ public enum Gender {
         return gender;
     }
 
+    @JsonCreator
     public static Gender findByName(String name){
         for(Gender one: values()){
             if(one.gender.equals(name))
@@ -23,6 +27,7 @@ public enum Gender {
     }
 
     @Override
+    @JsonValue
     public String toString() {
         return gender;
     }
