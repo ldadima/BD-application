@@ -1,6 +1,8 @@
 package org.fit.linevich.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -14,8 +16,10 @@ import javax.persistence.Table;
 import java.util.Collection;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "illnesses", schema = "public", catalog = "bd_zoo")
+@Table(name = "illnesses")
 public class IllnessEntity {
     @Id
     @GeneratedValue(generator = "illness_gen")
@@ -25,6 +29,6 @@ public class IllnessEntity {
     @Basic
     @Column(name = "name", nullable = false, length = -1)
     private String name;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "illnessId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "illnessId")
     private Collection<IllnessAnimalsEntity> illnessAnimalsById;
 }

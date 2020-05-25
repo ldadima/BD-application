@@ -30,12 +30,4 @@ public class Employee {
     @NotNull
     @Min(0)
     private BigDecimal salary;
-
-    public String getCategory() {
-        return category.getName();
-    }
-
-    public String getGender() {
-        return gender.getName();
-    }
 }

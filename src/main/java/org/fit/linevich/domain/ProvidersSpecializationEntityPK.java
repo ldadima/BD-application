@@ -1,17 +1,20 @@
 package org.fit.linevich.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
-import javax.persistence.Id;
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Embeddable
 public class ProvidersSpecializationEntityPK implements Serializable {
-    @Id
     @Column(name = "feed_id")
     private Integer feedId;
-    @Id
     @Column(name = "provider_id")
     private Integer providerId;
 }

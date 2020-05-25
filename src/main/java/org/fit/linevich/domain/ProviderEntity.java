@@ -1,6 +1,8 @@
 package org.fit.linevich.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -15,8 +17,10 @@ import java.sql.Date;
 import java.util.Collection;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "providers", schema = "public", catalog = "bd_zoo")
+@Table(name = "providers")
 public class ProviderEntity {
     @Id
     @GeneratedValue(generator = "provider_gen")
@@ -32,12 +36,8 @@ public class ProviderEntity {
     @Basic
     @Column(name = "date_end", nullable = true)
     private Date dateEnd;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "providerId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "providerId")
     private Collection<ProvidersSpecializationEntity> providersSpecializationsByProvId;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "providerId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "providerId")
     private Collection<SupplyEntity> suppliesByProvId;
-
-    public Integer getProvId() {
-        return provId;
-    }
 }

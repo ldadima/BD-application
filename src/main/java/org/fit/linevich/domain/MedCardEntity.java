@@ -1,6 +1,8 @@
 package org.fit.linevich.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.fit.linevich.converters_for_db.DevelopmentConverter;
 import org.fit.linevich.model.Development;
 
@@ -15,8 +17,10 @@ import javax.persistence.Table;
 import java.sql.Date;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "med_card", schema = "public", catalog = "bd_zoo")
+@Table(name = "med_card")
 public class MedCardEntity {
     @Id
     @Column(name = "animal_id")

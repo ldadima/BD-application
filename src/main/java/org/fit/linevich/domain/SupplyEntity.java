@@ -1,6 +1,8 @@
 package org.fit.linevich.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -16,8 +18,10 @@ import java.math.BigDecimal;
 import java.sql.Date;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "supply", schema = "public", catalog = "bd_zoo")
+@Table(name = "supply")
 public class SupplyEntity {
     @Id
     @GeneratedValue(generator = "supply_gen")

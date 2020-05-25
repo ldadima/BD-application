@@ -1,6 +1,8 @@
 package org.fit.linevich.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -14,8 +16,10 @@ import javax.persistence.Table;
 import java.util.Collection;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "feeds", schema = "public", catalog = "bd_zoo")
+@Table(name = "feeds")
 public class FeedEntity {
     @Id
     @Column(name = "id")
@@ -34,12 +38,12 @@ public class FeedEntity {
     @Basic
     @Column(name = "volume_independent_production", nullable = false)
     private Integer volumeIndependentProduction;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "feedId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "feedId")
     private Collection<EvenDayRationEntity> evenDayRationsById;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "feedId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "feedId")
     private Collection<OddDayRationEntity> oddDayRationsById;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "feedId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "feedId")
     private Collection<ProvidersSpecializationEntity> providersSpecializationsById;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "feedId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "feedId")
     private Collection<SupplyEntity> suppliesById;
 }

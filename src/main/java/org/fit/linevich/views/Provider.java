@@ -3,7 +3,7 @@ package org.fit.linevich.views;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Data
 public class Provider {
@@ -12,6 +12,6 @@ public class Provider {
     @NotNull
     private String name;
     @NotNull
-    private Date dateBegin;
-    private Date dateEnd;
+    private LocalDate dateBegin;
+    private LocalDate dateEnd;
 }

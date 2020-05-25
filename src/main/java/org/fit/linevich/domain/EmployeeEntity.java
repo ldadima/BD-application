@@ -1,6 +1,8 @@
 package org.fit.linevich.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.fit.linevich.converters_for_db.EmployeeCategoryConverter;
 import org.fit.linevich.converters_for_db.GenderConverter;
 import org.fit.linevich.model.EmployeeCategory;
@@ -20,8 +22,10 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "employees", schema = "public", catalog = "bd_zoo")
+@Table(name = "employees")
 public class EmployeeEntity {
     @Id
     @GeneratedValue(generator = "employees_gen")
@@ -54,8 +58,8 @@ public class EmployeeEntity {
     @Basic
     @Column(name = "salary", nullable = false, precision = 0)
     private BigDecimal salary;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "employerId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "employerId")
     private Collection<AccessAnimalsEntity> accessAnimalsById;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "employerId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "employerId")
     private Collection<ResponsibleAnimalsEntity> responsibleAnimalsById;
 }

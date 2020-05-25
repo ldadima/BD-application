@@ -1,6 +1,8 @@
 package org.fit.linevich.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.fit.linevich.converters_for_db.AnimalTypeConverter;
 import org.fit.linevich.converters_for_db.ClimaticZoneConverter;
 import org.fit.linevich.converters_for_db.GenderConverter;
@@ -25,8 +27,10 @@ import java.sql.Date;
 import java.util.Collection;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "animals", schema = "public", catalog = "bd_zoo")
+@Table(name = "animals")
 public class AnimalEntity {
     @Id
     @GeneratedValue(generator = "animal_gen")
@@ -74,24 +78,24 @@ public class AnimalEntity {
     @Basic
     @Column(name = "need_relocation", nullable = false)
     private Boolean needRelocation;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<AccessAnimalsEntity> accessAnimalsById;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<AnimalCompatibilityEntity> animalCompatibilitiesById;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<AnimalReceiptEntity> animalReceiptsById;
-    @OneToMany( cascade = CascadeType.ALL, mappedBy = "animalId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<CellsAnimalsEntity> cellsAnimalsById;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<EvenDayRationEntity> evenDayRationsById;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<IllnessAnimalsEntity> illnessAnimalsById;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "animal")
     private MedCardEntity medCardById;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<OddDayRationEntity> oddDayRationsById;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<ResponsibleAnimalsEntity> responsibleAnimalsById;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animalId")
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "animalId")
     private Collection<VaccineEntity> vaccinesById;
 }

@@ -1,33 +1,32 @@
 package org.fit.linevich.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.fit.linevich.converters_for_db.SeasonConverter;
-import org.fit.linevich.model.Season;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Convert;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "even_day_ration", schema = "public", catalog = "bd_zoo")
-@IdClass(EvenDayRationEntityPK.class)
+@Table(name = "even_day_ration")
 public class EvenDayRationEntity {
-    @Id
-    @Column(name = "season", nullable = false)
-    @Convert(converter = SeasonConverter.class)
-    private Season season;
+    @EmbeddedId
+    private EvenDayRationEntityPK evenDayRationEntityPK;
+
     @Basic
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
-    @Id
+    @MapsId("animalId")
     @ManyToOne
     @JoinColumn(name = "animal_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
     private AnimalEntity animalId;

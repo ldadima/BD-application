@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class ProvidersController {
 
     @GetMapping("/supplyForPeriod")
     @ApiOperation("Providers who give feed in this period")
-    public ResponseEntity<List<Provider>> supplyForPeriod(Date begin, Date end){
+    public ResponseEntity<List<Provider>> supplyForPeriod(LocalDate begin, LocalDate end){
         List<Provider> providers = providersService.supplyForPeriod(begin, end);
         return ResponseEntity.ok(providers);
     }

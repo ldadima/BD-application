@@ -1,25 +1,28 @@
 package org.fit.linevich.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
 import java.sql.Date;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "vaccines", schema = "public", catalog = "bd_zoo")
-@IdClass(VaccineEntityPK.class)
+@Table(name = "vaccines")
 public class VaccineEntity {
-    @Id
-    @Column(name = "vaccine_id", nullable = false)
-    private Integer vaccineId;
+    @EmbeddedId
+    private VaccineEntityPK vaccineEntityPK;
+
     @Basic
     @Column(name = "medicine_name", nullable = false, length = -1)
     private String medicineName;
@@ -29,7 +32,7 @@ public class VaccineEntity {
     @Basic
     @Column(name = "date_vaccine", nullable = false)
     private Date dateVaccine;
-    @Id
+    @MapsId("animalId")
     @ManyToOne
     @JoinColumn(name = "animal_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
     private AnimalEntity animalId;

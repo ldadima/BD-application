@@ -5,7 +5,7 @@ import org.fit.linevich.model.Gender;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Date;
+import java.sql.Date;
 
 @Data
 public class AnimalCellQuery {
@@ -25,9 +25,5 @@ public class AnimalCellQuery {
         this.weight = weight;
         Period period = Period.between(LocalDate.now(), LocalDate.parse(birthday.toString()));
         this.age = period.getYears()*12+period.getMonths();
-    }
-
-    public String getGender() {
-        return gender.getName();
     }
 }

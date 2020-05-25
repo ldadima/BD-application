@@ -12,6 +12,8 @@ import javax.persistence.SqlResultSetMapping;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @SqlResultSetMapping(
         name = "feedQueryMapper",
         classes =
@@ -23,8 +25,6 @@ import javax.persistence.SqlResultSetMapping;
                 }
         )
 )
-@AllArgsConstructor
-@NoArgsConstructor
 public class FeedNotNeedEntity {
     @Id
     private String name;

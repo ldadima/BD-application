@@ -1,17 +1,20 @@
 package org.fit.linevich.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
-import javax.persistence.Id;
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Embeddable
 public class AnimalCompatibilityEntityPK implements Serializable {
-    @Id
     @Column(name = "animal_kind")
     private String animalKind;
-    @Id
     @Column(name = "animal_id")
     private Integer animalId;
 }

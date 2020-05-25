@@ -27,37 +27,4 @@ public class FullInfoAnimalQuery {
     private Integer weight;
     private String vaccine;
     private String illness;
-
-
-    public String getType() {
-        return type.getName();
-    }
-
-    public void setType(String type) {
-        this.type = AnimalType.findByName(type);
-    }
-
-    public String getClimaticHabitat() {
-        return climaticHabitat.getName();
-    }
-
-    public void setClimaticHabitat(String climaticHabitat) {
-        this.climaticHabitat = ClimaticZone.findByName(climaticHabitat);
-    }
-
-    public String getGender() {
-        return gender.getName();
-    }
-
-    public void setGender(String gender) {
-        this.gender = Gender.findByName(gender);
-    }
-
-    public String getPhysicalState() {
-        return physicalState.getName();
-    }
-
-    public void setPhysicalState(String physicalState) {
-        this.physicalState = PhysState.findByName(physicalState);
-    }
 }
