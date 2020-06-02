@@ -18,6 +18,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -80,6 +83,30 @@ public abstract class CustomDataMapper {
     public abstract List<Zoo> toZooListView(Iterable<ZooEntity> zooEntity);
 
     public abstract List<FeedNotNeedQuery> toFeedQuery(List<FeedNotNeedEntity> resultNative);
+
+    public Page<Animal> toAnimalPage(Page<AnimalEntity> page){
+        return new PageImpl<>(toAnimalListView(page.toList()), page.getPageable(), page.getTotalElements());
+    }
+
+    public Page<Employee> toEmployeePage(Page<EmployeeEntity> page){
+        return new PageImpl<>(toEmployeeListView(page.toList()), page.getPageable(), page.getTotalElements());
+    }
+
+    public Page<Feed> toFeedPage(Page<FeedEntity> page){
+        return new PageImpl<>(toFeedListView(page.toList()), page.getPageable(), page.getTotalElements());
+    }
+
+    public Page<Illness> toIllnessPage(Page<IllnessEntity> page){
+        return new PageImpl<>(toIllnessListView(page.toList()), page.getPageable(), page.getTotalElements());
+    }
+
+    public Page<Provider> toProviderPage(Page<ProviderEntity> page){
+        return new PageImpl<>(toProviderListView(page.toList()), page.getPageable(), page.getTotalElements());
+    }
+
+    public Page<Zoo> toZooPage(Page<ZooEntity> page){
+        return new PageImpl<>(toZooListView(page.toList()), page.getPageable(), page.getTotalElements());
+    }
 
     // AnimalType toAnimalType(String name) {
     //     return AnimalType.findByName(name);

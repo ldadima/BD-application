@@ -13,6 +13,9 @@ import org.fit.linevich.repositories.AnimalsRepo;
 import org.fit.linevich.repositories.EmployeesRepo;
 import org.fit.linevich.views.Employee;
 import org.fit.linevich.views.ResponsibleAnimalQuery;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -27,9 +30,10 @@ public class EmployeeService {
     private final AnimalsRepo animalsRepo;
     private final CustomDataMapper customDataMapper;
 
-    public List<Employee> showAll() {
-        List<EmployeeEntity> employees = employeesRepo.findAll();
-        return customDataMapper.toEmployeeListView(employees);
+    public Page<Employee> showAll(int page, int size) {
+        Page<EmployeeEntity> employees = employeesRepo.findAll(PageRequest.of(page, size,
+                Sort.by("id").ascending()));
+        return customDataMapper.toEmployeePage(employees);
     }
 
     public Employee findById(int id) {
@@ -116,63 +120,63 @@ public class EmployeeService {
     /**
      * 1-ый запрос
      */
-    public List<Employee> findByCategory(EmployeeCategory category) {
-        List<EmployeeEntity> employees =
-                employeesRepo.getEmployeeEntitiesByCategory(category);
-        return customDataMapper.toEmployeeListView(employees);
+    public Page<Employee> findByCategory(int page, int size, EmployeeCategory category) {
+        Page<EmployeeEntity> employees =
+                employeesRepo.getEmployeeEntitiesByCategory(PageRequest.of(page, size), category);
+        return customDataMapper.toEmployeePage(employees);
     }
 
     /**
      * 1-ый запрос
      */
-    public List<Employee> groupByDuration() {
-        List<EmployeeEntity> employees =
-                employeesRepo.groupByDuration();
-        return customDataMapper.toEmployeeListView(employees);
+    public Page<Employee> orderByDuration(int page, int size) {
+        Page<EmployeeEntity> employees =
+                employeesRepo.orderByDuration(PageRequest.of(page, size));
+        return customDataMapper.toEmployeePage(employees);
     }
 
     /**
      * 1-ый запрос
      */
-    public List<Employee> groupByAge() {
-        List<EmployeeEntity> employees =
-                employeesRepo.groupByAge();
-        return customDataMapper.toEmployeeListView(employees);
+    public Page<Employee> orderByAge(int page, int size) {
+        Page<EmployeeEntity> employees =
+                employeesRepo.orderByAge(PageRequest.of(page, size));
+        return customDataMapper.toEmployeePage(employees);
     }
 
     /**
      * 1-ый запрос
      */
-    public List<Employee> groupByGender() {
-        List<EmployeeEntity> employees =
-                employeesRepo.groupByGender();
-        return customDataMapper.toEmployeeListView(employees);
+    public Page<Employee> orderByGender(int page, int size) {
+        Page<EmployeeEntity> employees =
+                employeesRepo.orderByGender(PageRequest.of(page, size));
+        return customDataMapper.toEmployeePage(employees);
     }
 
     /**
      * 1-ый запрос
      */
-    public List<Employee> groupBySalary() {
-        List<EmployeeEntity> employees =
-                employeesRepo.groupBySalary();
-        return customDataMapper.toEmployeeListView(employees);
+    public Page<Employee> orderBySalary(int page, int size) {
+        Page<EmployeeEntity> employees =
+                employeesRepo.orderBySalary(PageRequest.of(page, size));
+        return customDataMapper.toEmployeePage(employees);
     }
 
     /**
      * 2-ой запрос
      */
-    public List<Employee> responsibleAnimal(ResponsibleAnimalQuery query) {
-        List<EmployeeEntity> employees =
-                employeesRepo.responsibleAnimal(query.getKind(), query.getBegin(), query.getEnd());
-        return customDataMapper.toEmployeeListView(employees);
+    public Page<Employee> responsibleAnimal(ResponsibleAnimalQuery query) {
+        Page<EmployeeEntity> employees =
+                employeesRepo.responsibleAnimal(PageRequest.of(query.getPage(), query.getSize()), query.getKind(), query.getBegin(), query.getEnd(), Date.valueOf(LocalDate.now()));
+        return customDataMapper.toEmployeePage(employees);
     }
 
     /**
      * 3-ий запрос
      */
-    public List<Employee> accessAnimal(String kind) {
-        List<EmployeeEntity> employees =
-                employeesRepo.accessAnimal(kind);
-        return customDataMapper.toEmployeeListView(employees);
+    public Page<Employee> accessAnimal(int page, int size, String kind) {
+        Page<EmployeeEntity> employees =
+                employeesRepo.accessAnimal(PageRequest.of(page, size), kind);
+        return customDataMapper.toEmployeePage(employees);
     }
 }

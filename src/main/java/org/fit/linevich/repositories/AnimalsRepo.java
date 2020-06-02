@@ -1,13 +1,15 @@
 package org.fit.linevich.repositories;
 
 import org.fit.linevich.domain.AnimalEntity;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
-public interface AnimalsRepo extends CrudRepository<AnimalEntity, Integer> {
+public interface AnimalsRepo extends PagingAndSortingRepository<AnimalEntity, Integer> {
     @Override
-    List<AnimalEntity> findAll();
+    Page<AnimalEntity> findAll(Pageable pageable);
 
-    List<AnimalEntity> getAnimalEntitiesByNeedRelocationIsTrue();
+    Page<AnimalEntity> getAnimalEntitiesByNeedRelocationIsTrue(Pageable pageable);
 }

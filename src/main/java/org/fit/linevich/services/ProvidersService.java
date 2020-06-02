@@ -10,6 +10,9 @@ import org.fit.linevich.mapper.CustomDataMapper;
 import org.fit.linevich.repositories.FeedsRepo;
 import org.fit.linevich.repositories.ProvidersRepo;
 import org.fit.linevich.views.Provider;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -28,9 +31,10 @@ public class ProvidersService {
     private final CustomDataMapper customDataMapper;
     private final EntityManager entityManager;
 
-    public List<Provider> showAll() {
-        Iterable<ProviderEntity> providers = providersRepo.findAll();
-        return customDataMapper.toProviderListView(providers);
+    public Page<Provider> showAll(int page, int size) {
+        Page<ProviderEntity> providers = providersRepo.findAll(PageRequest.of(page, size,
+                Sort.by("provId").ascending()));
+        return customDataMapper.toProviderPage(providers);
     }
 
     public Provider findById(int id) {

@@ -5,6 +5,9 @@ import org.fit.linevich.domain.IllnessEntity;
 import org.fit.linevich.mapper.CustomDataMapper;
 import org.fit.linevich.repositories.IllnessesRepo;
 import org.fit.linevich.views.Illness;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +20,10 @@ public class IllnessesService {
     private final IllnessesRepo illnessesRepo;
     private final CustomDataMapper customDataMapper;
 
-    public List<Illness> showAll(){
-        Iterable<IllnessEntity> illnesses = illnessesRepo.findAll();
-        return customDataMapper.toIllnessListView(illnesses);
+    public Page<Illness> showAll(int page, int size){
+        Page<IllnessEntity> illnesses = illnessesRepo.findAll(PageRequest.of(page, size,
+                Sort.by("id").ascending()));
+        return customDataMapper.toIllnessPage(illnesses);
     }
 
     public Illness findById(int id){

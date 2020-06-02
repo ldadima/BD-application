@@ -313,10 +313,31 @@ create table if not exists even_day_ration
 create table if not exists productive_age
 (
     kind text not null
-        constraint table_name_pk
+        constraint productive_age_pk
             primary key,
     age integer not null
 );
 
--- alter table productive_age owner to "lda-dima";
 
+CREATE FUNCTION trigger_animal_before() RETURNS trigger AS
+'
+    BEGIN
+        if NEW.birthday > now()
+        then NEW.birthday=now();
+        end if;
+        return NEW;
+    END;'
+    LANGUAGE plpgsql;
+
+CREATE TRIGGER animals_insert
+    BEFORE INSERT OR UPDATE ON animals FOR EACH ROW
+EXECUTE PROCEDURE trigger_animal_before();
+
+CREATE  FUNCTION checkDate(date date) RETURNS date AS $$
+BEGIN
+    if date > now()
+    then return null;
+    else return date;
+    end if;
+END;
+$$ LANGUAGE plpgsql;

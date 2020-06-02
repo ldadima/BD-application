@@ -1,6 +1,7 @@
 package org.fit.linevich.services;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.fit.linevich.domain.AnimalCompatibilityEntity;
 import org.fit.linevich.domain.AnimalCompatibilityEntityPK;
 import org.fit.linevich.domain.AnimalEntity;
@@ -25,50 +26,92 @@ import org.fit.linevich.repositories.FeedsRepo;
 import org.fit.linevich.repositories.IllnessesRepo;
 import org.fit.linevich.views.Animal;
 import org.fit.linevich.views.AnimalCellQuery;
+import org.fit.linevich.views.AnimalMed;
 import org.fit.linevich.views.FullInfoAnimalQuery;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AnimalService {
     private final AnimalsRepo animalsRepo;
     private final FeedsRepo feedsRepo;
     private final IllnessesRepo illnessesRepo;
     private final CustomDataMapper customDataMapper;
     private final EntityManager entityManager;
+    private final JdbcTemplate jdbcTemplate;
+    private SimpleJdbcCall simpleJdbcCall;
 
 
-    public List<Animal> showAll() {
-        List<AnimalEntity> animalsList = animalsRepo.findAll();
-        return customDataMapper.toAnimalListView(animalsList);
+    @PostConstruct
+    public void initJDBC(){
+        jdbcTemplate.setResultsMapCaseInsensitive(true);
+        simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate).withFunctionName("checkDate");
     }
 
-    public Animal findById(int id) {
+    public Page<Animal> showAll(int page, int size) {
+        Page<AnimalEntity> animalEntities = animalsRepo.findAll(PageRequest.of(page, size,
+                Sort.by("id").ascending()));
+        return customDataMapper.toAnimalPage(animalEntities);
+    }
+
+    public AnimalMed findById(int id) {
         Optional<AnimalEntity> animalEntity = animalsRepo.findById(id);
-        return animalEntity.map(customDataMapper::toAnimalView).orElse(null);
+        AnimalMed animalMed = new AnimalMed();
+        animalMed.setAnimal(animalEntity.map(customDataMapper::toAnimalView).orElse(null));
+        MedCardEntity medCardEntity = animalEntity.map(AnimalEntity::getMedCardById).orElse(null);
+        if(medCardEntity != null){
+            animalMed.setHeight(medCardEntity.getHeight());
+            animalMed.setWeight(medCardEntity.getWeight());
+            animalMed.setDevelopment(medCardEntity.getDevelopment());
+            animalMed.setNeedHospital(medCardEntity.getNeedHospital());
+            animalMed.setDateLast(LocalDate.parse(medCardEntity.getDateLastInspection().toString()));
+        }
+        return animalMed;
     }
 
-    public void create(Animal animal) {
+    @Transactional
+    public void create(AnimalMed animal) {
         AnimalEntity animalEntity = new AnimalEntity();
-        customDataMapper.toAnimalEntity(animal, animalEntity);
+        customDataMapper.toAnimalEntity(animal.getAnimal(), animalEntity);
+        if (animalEntity.getDepartureDate() != null) {
+            animalEntity.setDepartureDate((Date) simpleJdbcCall.execute(Map.of("date", animalEntity.getDepartureDate())).get("returnValue"));
+        }
+        animalEntity = animalsRepo.save(animalEntity);
+        animalEntity.setMedCardById(new MedCardEntity(animalEntity.getId(), animal.getHeight(), animal.getWeight(),
+                animal.getDevelopment(), animal.getNeedHospital(), Date.valueOf(animal.getDateLast()), animalEntity));
         animalsRepo.save(animalEntity);
     }
 
-    public boolean update(Animal animal) {
-        AnimalEntity animalInBd = animalsRepo.findById(animal.getId())
+    @Transactional
+    public boolean update(AnimalMed animal) {
+        AnimalEntity animalInBd = animalsRepo.findById(animal.getAnimal().getId())
                 .orElse(null);
         if (animalInBd == null) {
             return false;
         }
-        customDataMapper.toAnimalEntity(animal, animalInBd);
+        customDataMapper.toAnimalEntity(animal.getAnimal(), animalInBd);
+        if (animalInBd.getDepartureDate() != null) {
+            animalInBd.setDepartureDate((Date) simpleJdbcCall.execute(Map.of("date", animalInBd.getDepartureDate())).get("returnValue"));
+        }
+        animalInBd.setMedCardById(new MedCardEntity(animalInBd.getId(), animal.getHeight(), animal.getWeight(),
+                animal.getDevelopment(), animal.getNeedHospital(), Date.valueOf(animal.getDateLast()), animalInBd));
         animalsRepo.save(animalInBd);
         return true;
     }
@@ -203,14 +246,17 @@ public class AnimalService {
         animalsRepo.save(animalEntity);
     }
 
-    public void addOrUpdateMedCard(int animalId, int height, int weight, Development development, boolean needHospital, LocalDate dateLast) {
+    public void addOrUpdateMedCard(int animalId, int height, int weight, Development development, boolean needHospital,
+            LocalDate dateLast) {
         AnimalEntity animalEntity = animalsRepo.findById(animalId).orElse(null);
         if (animalEntity == null) {
             return;
         }
         MedCardEntity medCardEntity = animalEntity.getMedCardById();
-        if(medCardEntity == null){
-            medCardEntity = new MedCardEntity(animalId, height, weight, development, needHospital, Date.valueOf(dateLast), animalEntity);
+        if (medCardEntity == null) {
+            medCardEntity =
+                    new MedCardEntity(animalId, height, weight, development, needHospital, Date.valueOf(dateLast),
+                            animalEntity);
             animalEntity.setMedCardById(medCardEntity);
         }
         medCardEntity.setDateLastInspection(Date.valueOf(dateLast));
@@ -233,8 +279,8 @@ public class AnimalService {
     /**
      * 4-ый запрос
      */
-    public List<AnimalCellQuery> animalsCellLife(int cellId) {
-        return entityManager.createQuery(
+    public Page<AnimalCellQuery> animalsCellLife(int page, int size, int cellId) {
+        List<AnimalCellQuery> animalCellQueries = entityManager.createQuery(
                 "select new org.fit.linevich.views.AnimalCellQuery(a.name, a.kindAnimal, a.gender, m.height, m" +
                         ".weight, a.birthday) from " +
                         "AnimalEntity a join MedCardEntity m on m.animal = a join CellsAnimalsEntity c on a = c" +
@@ -250,12 +296,13 @@ public class AnimalService {
                         "        (a.departureDate = c.dateEnd or" +
                         "         (a.departureDate is null and c.dateEnd is null)))) order by a.birthday",
                 AnimalCellQuery.class).setParameter("cell", cellId).getResultList();
+        return new PageImpl<>(animalCellQueries.subList(page*size, Math.min(size * (page + 1), animalCellQueries.size())), PageRequest.of(page, size), animalCellQueries.size());
     }
 
     /**
      * 5-ый запрос
      */
-    public List<Animal> needWarmAnimalsByAge(int age) {
+    public Page<Animal> needWarmAnimalsByAge(int page, int size, int age) {
         List<AnimalEntity> animalEntities = entityManager
                 .createNativeQuery("select *" +
                                 "from" +
@@ -268,13 +315,14 @@ public class AnimalService {
                         AnimalEntity.class)
                 .setParameter("age", age)
                 .getResultList();
-        return customDataMapper.toAnimalListView(animalEntities);
+        List<Animal> animals = customDataMapper.toAnimalListView(animalEntities);
+        return new PageImpl<>(animals.subList(page*size, Math.min(size * (page + 1), animals.size())), PageRequest.of(page, size, Sort.by("id").ascending()), animals.size());
     }
 
     /**
      * 6-ой запрос
      */
-    public List<Animal> givenIllnessAnimals(String illness) {
+    public Page<Animal> givenIllnessAnimals(int page, int size, String illness) {
         List<AnimalEntity> animalEntities = entityManager
                 .createQuery("select a from AnimalEntity as a " +
                         "join IllnessAnimalsEntity as ia on a = ia.animalId " +
@@ -282,47 +330,51 @@ public class AnimalService {
                         "where ill.name = :illness", AnimalEntity.class)
                 .setParameter("illness", illness)
                 .getResultList();
-        return customDataMapper.toAnimalListView(animalEntities);
+        List<Animal> animals = customDataMapper.toAnimalListView(animalEntities);
+        return new PageImpl<>(animals.subList(page*size, Math.min(size * (page + 1), animals.size())), PageRequest.of(page, size, Sort.by("id").ascending()), animals.size());
     }
 
     /**
      * 6-ой запрос
      */
-    public List<Animal> givenVaccineAnimals(String vaccine) {
+    public Page<Animal> givenVaccineAnimals(int page, int size, String vaccine) {
         List<AnimalEntity> animalEntities = entityManager
                 .createQuery("select a from AnimalEntity as a " +
                         "join VaccineEntity as vac on a = vac.animalId " +
                         "where vac.medicineName = :vaccine", AnimalEntity.class)
                 .setParameter("vaccine", vaccine)
                 .getResultList();
-        return customDataMapper.toAnimalListView(animalEntities);
+        List<Animal> animals = customDataMapper.toAnimalListView(animalEntities);
+        return new PageImpl<>(animals.subList(page*size, Math.min(size * (page + 1), animals.size())), PageRequest.of(page, size, Sort.by("id").ascending()), animals.size());
     }
 
     /**
      * 7-ой запрос
      */
-    public List<Animal> compatibilityKindAnimals(String kind) {
+    public Page<Animal> compatibilityKindAnimals(int page, int size, String kind) {
         List<AnimalEntity> animalEntities = entityManager
                 .createQuery("select a from AnimalEntity as a " +
                         "join AnimalCompatibilityEntity as co on co.animalId = a " +
                         "where co.animalCompatibilityEntityPK.animalKind = :kind", AnimalEntity.class)
                 .setParameter("kind", kind)
                 .getResultList();
-        return customDataMapper.toAnimalListView(animalEntities);
+        List<Animal> animals = customDataMapper.toAnimalListView(animalEntities);
+        return new PageImpl<>(animals.subList(page*size, Math.min(size * (page + 1), animals.size())), PageRequest.of(page, size, Sort.by("id").ascending()), animals.size());
     }
 
     /**
      * 7-ой запрос
      */
-    public List<Animal> needRelocationAnimals() {
-        List<AnimalEntity> animalEntities = animalsRepo.getAnimalEntitiesByNeedRelocationIsTrue();
-        return customDataMapper.toAnimalListView(animalEntities);
+    public Page<Animal> needRelocationAnimals(int page, int size) {
+        Page<AnimalEntity> animalEntities =
+                animalsRepo.getAnimalEntitiesByNeedRelocationIsTrue(PageRequest.of(page, size, Sort.by("id").ascending()));
+        return customDataMapper.toAnimalPage(animalEntities);
     }
 
     /**
      * 7-ой запрос
      */
-    public List<Animal> needWarmCellAnimals() {
+    public Page<Animal> needWarmCellAnimals(int page, int size) {
         List<AnimalEntity> animalEntities = entityManager
                 .createQuery("select a from AnimalEntity as a " +
                         "join CellsAnimalsEntity as ce on ce.animalId = a " +
@@ -330,13 +382,14 @@ public class AnimalService {
                 .setParameter("zones", Set.of(ClimaticZone.EQUATORIAL_FOREST, ClimaticZone.SUBTROPICAL_FOREST,
                         ClimaticZone.DESERT))
                 .getResultList();
-        return customDataMapper.toAnimalListView(animalEntities);
+        List<Animal> animals = customDataMapper.toAnimalListView(animalEntities);
+        return new PageImpl<>(animals.subList(page*size, Math.min(size * (page + 1), animals.size())), PageRequest.of(page, size, Sort.by("id").ascending()), animals.size());
     }
 
     /**
      * 10-ый запрос
      */
-    public List<Animal> needFeed(String feed, String season) {
+    public Page<Animal> needFeed(int page, int size, String feed, Season season) {
         List<AnimalEntity> animalEntities = entityManager.createNativeQuery("select *  " +
                 "from animals  " +
                 "where id in (select (anim_feeds.animal_id)  " +
@@ -350,9 +403,10 @@ public class AnimalService {
                 "             where feeds.name = :feed  " +
                 "               and season = :season)", AnimalEntity.class)
                 .setParameter("feed", feed)
-                .setParameter("season", season)
+                .setParameter("season", season.getName())
                 .getResultList();
-        return customDataMapper.toAnimalListView(animalEntities);
+        List<Animal> animals = customDataMapper.toAnimalListView(animalEntities);
+        return new PageImpl<>(animals.subList(page*size, Math.min(size * (page + 1), animals.size())), PageRequest.of(page, size, Sort.by("id").ascending()), animals.size());
     }
 
     /**

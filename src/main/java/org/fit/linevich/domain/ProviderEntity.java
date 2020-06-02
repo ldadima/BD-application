@@ -24,7 +24,7 @@ import java.util.Collection;
 public class ProviderEntity {
     @Id
     @GeneratedValue(generator = "provider_gen")
-    @SequenceGenerator(name = "provider_gen", sequenceName = "provider_prov_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "provider_gen", sequenceName = "providers_prov_id_seq", allocationSize = 1)
     @Column(name = "prov_id")
     private Integer provId;
     @Basic

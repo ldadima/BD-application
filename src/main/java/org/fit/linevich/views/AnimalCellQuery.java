@@ -5,7 +5,7 @@ import org.fit.linevich.model.Gender;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.sql.Date;
+import java.util.Date;
 
 @Data
 public class AnimalCellQuery {

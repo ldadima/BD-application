@@ -7,6 +7,9 @@ import org.fit.linevich.mapper.CustomDataMapper;
 import org.fit.linevich.repositories.FeedsRepo;
 import org.fit.linevich.views.Feed;
 import org.fit.linevich.views.FeedNotNeedQuery;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -20,9 +23,10 @@ public class FeedsService {
     private final CustomDataMapper customDataMapper;
     private final EntityManager entityManager;
 
-    public List<Feed> showAll(){
-        Iterable<FeedEntity> feeds = feedsRepo.findAll();
-        return customDataMapper.toFeedListView(feeds);
+    public Page<Feed> showAll(int page, int size){
+        Page<FeedEntity> feeds = feedsRepo.findAll(PageRequest.of(page, size,
+                Sort.by("id").ascending()));
+        return customDataMapper.toFeedPage(feeds);
     }
 
     public Feed findById(int id){
@@ -54,9 +58,9 @@ public class FeedsService {
     /**
      * 9-ый запрос
      */
-    public List<Feed> producedYourself(){
-        List<FeedEntity> feedEntities = feedsRepo.getFeedEntitiesByVolumeIndependentProductionGreaterThan(0);
-        return customDataMapper.toFeedListView(feedEntities);
+    public Page<Feed> producedYourself(int page, int size){
+        Page<FeedEntity> feedEntities = feedsRepo.getFeedEntitiesByVolumeIndependentProductionGreaterThan(PageRequest.of(page, size), 0);
+        return customDataMapper.toFeedPage(feedEntities);
     }
 
     /**

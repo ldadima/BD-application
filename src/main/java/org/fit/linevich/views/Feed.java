@@ -13,9 +13,9 @@ public class Feed {
     @NotNull
     private String type;
     @NotNull
-    @Min(0)
+    @Min(value = 0, message = "Объем(склад) не меньше 0")
     private Integer stock;
     @NotNull
-    @Min(0)
+    @Min(value = 0, message = "Объем(производство) не меньше 0")
     private Integer volumeIndependentProduction;
 }

@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 @Data
 public class Provider {
-    @NotNull
     private Integer provId;
     @NotNull
     private String name;

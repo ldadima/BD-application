@@ -13,6 +13,9 @@ import org.fit.linevich.mapper.CustomDataMapper;
 import org.fit.linevich.repositories.AnimalsRepo;
 import org.fit.linevich.repositories.ZoosRepo;
 import org.fit.linevich.views.Zoo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -28,9 +31,10 @@ public class ZoosService {
     private final AnimalsRepo animalsRepo;
     private final CustomDataMapper customDataMapper;
 
-    public List<Zoo> showAll(){
-        Iterable<ZooEntity> zoos = zoosRepo.findAll();
-        return customDataMapper.toZooListView(zoos);
+    public Page<Zoo> showAll(int page, int size){
+        Page<ZooEntity> zoos = zoosRepo.findAll(PageRequest.of(page, size,
+                Sort.by("id").ascending()));
+        return customDataMapper.toZooPage(zoos);
     }
 
     public Zoo findById(int id){

@@ -5,9 +5,11 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.fit.linevich.services.IllnessesService;
 import org.fit.linevich.views.Illness;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,14 +25,15 @@ import java.util.List;
 @Controller
 @AllArgsConstructor
 @RequestMapping("/illnesses")
+@CrossOrigin(origins = "http://localhost:3000")
 public class IllnessesController {
     private final IllnessesService illnessesService;
 
     @GetMapping("/showAll")
     @ApiOperation("Show all illnesses(sorry that they are)")
     @ResponseBody
-    public List<Illness> showIllnesses() {
-        return illnessesService.showAll();
+    public ResponseEntity<Page<Illness>> showIllnesses(int page, int size) {
+        return ResponseEntity.ok(illnessesService.showAll(page, size));
     }
 
     @GetMapping("/illnessById")

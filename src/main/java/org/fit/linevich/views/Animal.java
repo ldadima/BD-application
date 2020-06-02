@@ -28,7 +28,8 @@ public class Animal {
     private Integer progeny;
     @NotNull
     private LocalDate birthday;
-    private LocalDate departureLocalDate;
+    private LocalDate departureDate;
     private String departureReason;
+    @NotNull
     private Boolean needRelocation;
 }

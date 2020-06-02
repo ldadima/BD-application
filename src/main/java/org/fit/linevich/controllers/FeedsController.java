@@ -6,9 +6,11 @@ import lombok.AllArgsConstructor;
 import org.fit.linevich.services.FeedsService;
 import org.fit.linevich.views.Feed;
 import org.fit.linevich.views.FeedNotNeedQuery;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,22 +26,23 @@ import java.util.List;
 @Controller
 @AllArgsConstructor
 @RequestMapping("/feeds")
+@CrossOrigin(origins = "http://localhost:3000")
 public class FeedsController {
     private final FeedsService feedsService;
 
     @GetMapping("/showAll")
     @ApiOperation("Show all feeds in zoo")
     @ResponseBody
-    public ResponseEntity<List<Feed>> showFeeds() {
-        return ResponseEntity.ok(feedsService.showAll());
+    public ResponseEntity<Page<Feed>> showFeeds(int page, int size) {
+        return ResponseEntity.ok(feedsService.showAll(page, size));
     }
 
 
     @GetMapping("/producedMyself")
     @ApiOperation("Show feeds produced by zoo yourself")
     @ResponseBody
-    public ResponseEntity<List<Feed>> producedYourself() {
-        List<Feed> feeds = feedsService.producedYourself();
+    public ResponseEntity<Page<Feed>> producedYourself(int page, int size) {
+        Page<Feed> feeds = feedsService.producedYourself(page, size);
         return ResponseEntity.ok(feeds);
     }
 
