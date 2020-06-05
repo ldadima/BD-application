@@ -87,15 +87,15 @@ public class ProvidersController {
 
     @GetMapping("/supplyForPeriod")
     @ApiOperation("Providers who give feed in this period")
-    public ResponseEntity<List<Provider>> supplyForPeriod(LocalDate begin, LocalDate end){
-        List<Provider> providers = providersService.supplyForPeriod(begin, end);
+    public ResponseEntity<Page<Provider>> supplyForPeriod(int page, int size, String begin, String end){
+        Page<Provider> providers = providersService.supplyForPeriod(page, size, LocalDate.parse(begin), LocalDate.parse(end));
         return ResponseEntity.ok(providers);
     }
 
     @GetMapping("/specOfFeed")
     @ApiOperation("Providers who give only given feed")
-    public ResponseEntity<List<Provider>> specOfFeed(String feed){
-        List<Provider> providers = providersService.specFeed(feed);
+    public ResponseEntity<Page<Provider>> specOfFeed(int page, int size, String feed){
+        Page<Provider> providers = providersService.specFeed(page, size, feed);
         return ResponseEntity.ok(providers);
     }
 

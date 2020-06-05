@@ -92,9 +92,13 @@ public class EmployeeController {
     @PutMapping("/responsibleAnimalQuery")
     @ApiOperation("Show employees responsible for the kind of animal in a given period")
     @ResponseBody
-    public ResponseEntity<Page<Employee>> showEmployeesResponsibleAnimalQuery(@RequestBody ResponsibleAnimalQuery query) {
-        Page<Employee> employees = employeeService.responsibleAnimal(query);
-        return ResponseEntity.status(HttpStatus.OK).body(employees);
+    public ResponseEntity<Page<Employee>> showEmployeesResponsibleAnimalQueryOrAccess(@RequestBody ResponsibleAnimalQuery query) {
+        if (query.getBegin() != null && query.getEnd()!=null) {
+            Page<Employee> employees = employeeService.responsibleAnimal(query);
+            return ResponseEntity.status(HttpStatus.OK).body(employees);
+        } else {
+            return showEmployeesAccessAnimalQuery(query.getPage(), query.getSize(), query.getKind());
+        }
     }
 
     @GetMapping("/accessAnimalQuery")

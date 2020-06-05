@@ -9,8 +9,10 @@ import org.fit.linevich.domain.SupplyEntity;
 import org.fit.linevich.mapper.CustomDataMapper;
 import org.fit.linevich.repositories.FeedsRepo;
 import org.fit.linevich.repositories.ProvidersRepo;
+import org.fit.linevich.views.FeedNotNeedQuery;
 import org.fit.linevich.views.Provider;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -118,27 +120,28 @@ public class ProvidersService {
     /**
      * 8-ой запрос
      */
-    public List<Provider> supplyForPeriod(LocalDate begin, LocalDate end) {
-        List<ProviderEntity> providerEntities = entityManager.createQuery("select p from ProviderEntity as p " +
+    public Page<Provider> supplyForPeriod(int page, int size, LocalDate begin, LocalDate end) {
+        List<ProviderEntity> providerEntities = entityManager.createQuery("select distinct p from ProviderEntity as p " +
                 "join SupplyEntity as s on s.providerId = p " +
-                "where s.dateSupply between :begin and :end " +
-                "order by s.price", ProviderEntity.class)
+                "where s.dateSupply between :begin and :end", ProviderEntity.class)
                 .setParameter("begin", Date.valueOf(begin))
                 .setParameter("end", Date.valueOf(end))
                 .getResultList();
-        return customDataMapper.toProviderListView(providerEntities);
+        List<Provider> needQueries = customDataMapper.toProviderListView(providerEntities);
+        return new PageImpl<>(needQueries.subList(page*size, Math.min(size * (page + 1), needQueries.size())), PageRequest.of(page, size, Sort.by("id").ascending()), needQueries.size());
     }
 
     /**
      * 8-ой запрос
      */
-    public List<Provider> specFeed(String feed) {
-        List<ProviderEntity> providerEntities = entityManager.createQuery("select p from ProviderEntity as p " +
+    public Page<Provider> specFeed(int page, int size, String feed) {
+        List<ProviderEntity> providerEntities = entityManager.createQuery("select distinct p from ProviderEntity as p " +
                 "join ProvidersSpecializationEntity as spec on spec.providerId = p " +
                 "join FeedEntity as f on f = spec.feedId " +
                 "where f.name = :feed", ProviderEntity.class)
                 .setParameter("feed", feed)
                 .getResultList();
-        return customDataMapper.toProviderListView(providerEntities);
+        List<Provider> needQueries = customDataMapper.toProviderListView(providerEntities);
+        return new PageImpl<>(needQueries.subList(page*size, Math.min(size * (page + 1), needQueries.size())), PageRequest.of(page, size, Sort.by("id").ascending()), needQueries.size());
     }
 }

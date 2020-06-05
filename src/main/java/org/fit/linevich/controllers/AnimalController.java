@@ -149,6 +149,14 @@ public class AnimalController {
         return ResponseEntity.status(HttpStatus.OK).body(answer);
     }
 
+    @GetMapping("/expectedChild")
+    @ApiOperation("Show animal, expected child")
+    @ResponseBody
+    public ResponseEntity<Page<Animal>> expectedChild(int page, int size) {
+        Page<Animal> answer = animalService.expectedChild(page, size);
+        return ResponseEntity.status(HttpStatus.OK).body(answer);
+    }
+
     @PostMapping("/createAnimal")
     @ApiOperation("Create animal")
     public ResponseEntity<String> createAnimal(@Valid @RequestBody AnimalMed animalMed){

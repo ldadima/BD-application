@@ -50,8 +50,8 @@ public class FeedsController {
     @GetMapping("/notNeed")
     @ApiOperation("Show feeds not need for buy")
     @ResponseBody
-    public ResponseEntity<List<FeedNotNeedQuery>> notNeed() {
-        List<FeedNotNeedQuery> feeds = feedsService.notNeed();
+    public ResponseEntity<Page<FeedNotNeedQuery>> notNeed(int page, int size) {
+        Page<FeedNotNeedQuery> feeds = feedsService.notNeed(page, size);
         return ResponseEntity.ok(feeds);
     }
 

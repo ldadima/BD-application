@@ -8,17 +8,10 @@ import {
     faStepBackward,
     faStepForward, faTimes
 } from '@fortawesome/free-solid-svg-icons'
-// import DialogTitle from "@material-ui/core/DialogTitle";
-// import DialogContent from "@material-ui/core/DialogContent";
-// import TextField from "@material-ui/core/TextField";
-// import DialogActions from "@material-ui/core/DialogActions";
-// import Dialog from "@material-ui/core/Dialog";
 import MyToast from "./MyToast";
 import {faEdit} from "@fortawesome/free-regular-svg-icons";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import {Link} from "react-router-dom";
-import DatePicker from "react-datepicker";
-import moment from "moment";
 
 export default class AnimalsList extends React.Component {
 
@@ -29,13 +22,13 @@ export default class AnimalsList extends React.Component {
             animals: [],
             currentPage: 1,
             animalsPerPage: 10,
-            open: false,
             animalId: 0,
             show: false,
             message: '',
             ageSearch: false,
             illnessSearch: false,
             vaccineSearch: false,
+            childSearch: false,
             relocationSearch: false,
             kindSearch: false,
             warmSearch: false,
@@ -95,172 +88,221 @@ export default class AnimalsList extends React.Component {
         });
     };
 
-    submitForm = event => {
+    submitFormAge = event => {
         event.preventDefault();
-
-        const info = {
-            page: this.state.currentPage - 1,
-            size: this.state.animalsPerPage,
-            age: this.state.age
-        }
-        axios.get("http://localhost:8080/animals/needWarmAnimals?page=" + info.page +"&size=" + info.size +"&age=" + info.age)
-            .then(response => response.data)
-            .then((data) => {
-                this.setState({
-                    animals: data.content,
-                    totalPages: data.totalPages,
-                    totalElements: data.totalElements,
-                    currentPage: data.number + 1,
-                    ageSearch: true
-                })
-            })
-
-        setTimeout(() => this.setState({"show": false}), 3000);
-        this.setState(this.initialState);
+        this.setState({ageSearch : true}, () => {
+            this.submitForm(1);
+        });
     };
 
     submitFormIll = event => {
         event.preventDefault();
-
-        const info = {
-            page: this.state.currentPage - 1,
-            size: this.state.animalsPerPage,
-            illness: this.state.illness
-        }
-        axios.get("http://localhost:8080/animals/givenIllnessAnimals?page=" + info.page +"&size=" + info.size +"&illness=" + info.illness)
-            .then(response => response.data)
-            .then((data) => {
-                this.setState({
-                    animals: data.content,
-                    totalPages: data.totalPages,
-                    totalElements: data.totalElements,
-                    currentPage: data.number + 1,
-                    illnessSearch: true
-                })
-            })
-
-        setTimeout(() => this.setState({"show": false}), 3000);
-        this.setState(this.initialState);
+        this.setState({illnessSearch : true}, () => {
+            this.submitForm(1);
+        });
     };
 
     submitFormVaccine = event => {
         event.preventDefault();
-
-        const info = {
-            page: this.state.currentPage - 1,
-            size: this.state.animalsPerPage,
-            vaccine: this.state.vaccine
-        }
-        axios.get("http://localhost:8080/animals/givenVaccineAnimals?page=" + info.page +"&size=" + info.size +"&vaccine=" + info.vaccine)
-            .then(response => response.data)
-            .then((data) => {
-                this.setState({
-                    animals: data.content,
-                    totalPages: data.totalPages,
-                    totalElements: data.totalElements,
-                    currentPage: data.number + 1,
-                    vaccineSearch: true
-                })
-            })
-
-        setTimeout(() => this.setState({"show": false}), 3000);
-        this.setState(this.initialState);
+        this.setState({vaccineSearch : true}, () => {
+            this.submitForm(1);
+        });
     };
 
     submitFormKind = event => {
         event.preventDefault();
-
-        const info = {
-            page: this.state.currentPage - 1,
-            size: this.state.animalsPerPage,
-            kind: this.state.kind
-        }
-        axios.get("http://localhost:8080/animals/compatibilityKindAnimals?page=" + info.page +"&size=" + info.size +"&kind=" + info.kind)
-            .then(response => response.data)
-            .then((data) => {
-                this.setState({
-                    animals: data.content,
-                    totalPages: data.totalPages,
-                    totalElements: data.totalElements,
-                    currentPage: data.number + 1,
-                    kindSearch: true
-                })
-            })
-
-        setTimeout(() => this.setState({"show": false}), 3000);
-        this.setState(this.initialState);
+        this.setState({kindSearch : true}, () => {
+            this.submitForm(1);
+        });
     };
 
     submitFormRelocation = event => {
         event.preventDefault();
-
-        const info = {
-            page: this.state.currentPage - 1,
-            size: this.state.animalsPerPage
-        }
-        axios.get("http://localhost:8080/animals/needRelocationAnimals?page=" + info.page +"&size=" + info.size)
-            .then(response => response.data)
-            .then((data) => {
-                this.setState({
-                    animals: data.content,
-                    totalPages: data.totalPages,
-                    totalElements: data.totalElements,
-                    currentPage: data.number + 1,
-                    relocationSearch: true
-                })
-            })
-
-        setTimeout(() => this.setState({"show": false}), 3000);
-        this.setState(this.initialState);
+        this.setState({relocationSearch : true}, () => {
+            this.submitForm(1);
+        });
     };
 
     submitFormWarm = event => {
         event.preventDefault();
+        this.setState({warmSearch : true}, () => {
+            this.submitForm(1);
+        });
+    };
 
-        const info = {
-            page: this.state.currentPage - 1,
-            size: this.state.animalsPerPage
-        }
-        axios.get("http://localhost:8080/animals/needWarmCellAnimals?page=" + info.page +"&size=" + info.size)
-            .then(response => response.data)
-            .then((data) => {
-                this.setState({
-                    animals: data.content,
-                    totalPages: data.totalPages,
-                    totalElements: data.totalElements,
-                    currentPage: data.number + 1,
-                    warmSearch: true
-                })
-            })
-
-        setTimeout(() => this.setState({"show": false}), 3000);
-        this.setState(this.initialState);
+    submitFormChild = event => {
+        event.preventDefault();
+        this.setState({childSearch : true}, () => {
+            this.submitForm(1);
+        });
     };
 
     submitFormSeason = event => {
         event.preventDefault();
+        this.setState({seasonSearch : true}, () => {
+            this.submitForm(1);
+        });
+    };
 
-        const info = {
-            page: this.state.currentPage - 1,
-            size: this.state.animalsPerPage,
-            season: this.state.season,
-            food: this.state.food
+    submitForm(currentPage) {
+        currentPage -= 1;
+        if(isNaN(currentPage)) {
+            currentPage = 0;
         }
-        console.log(info);
-        axios.get("http://localhost:8080/animals/needFeed?page=" + info.page +"&size=" + info.size+"&feed=" + info.food+"&season=" + info.season)
-            .then(response => response.data)
-            .then((data) => {
-                this.setState({
-                    animals: data.content,
-                    totalPages: data.totalPages,
-                    totalElements: data.totalElements,
-                    currentPage: data.number + 1,
-                    seasonSearch: true
+        if(currentPage > this.state.totalPages) {
+            currentPage = this.state.totalPages;
+        }
+        if(this.state.ageSearch){
+            const info = {
+                page: currentPage,
+                size: this.state.animalsPerPage,
+                age: this.state.age
+            }
+            axios.get("http://localhost:8080/animals/needWarmAnimals?page=" + info.page +"&size=" + info.size +"&age=" + info.age)
+                .then(response => response.data)
+                .then((data) => {
+                    this.setState({
+                        animals: data.content,
+                        totalPages: data.totalPages,
+                        totalElements: data.totalElements,
+                        currentPage: data.number + 1,
+                        ageSearch: true
+                    })
                 })
-            })
-
-        setTimeout(() => this.setState({"show": false}), 3000);
-        this.setState(this.initialState);
+            setTimeout(() => this.setState({"show": false}), 3000);
+            this.setState(this.initialState);
+        } else if(this.state.illnessSearch){
+            const info = {
+                page: currentPage,
+                size: this.state.animalsPerPage,
+                illness: this.state.illness
+            }
+            axios.get("http://localhost:8080/animals/givenIllnessAnimals?page=" + info.page +"&size=" + info.size +"&illness=" + info.illness)
+                .then(response => response.data)
+                .then((data) => {
+                    this.setState({
+                        animals: data.content,
+                        totalPages: data.totalPages,
+                        totalElements: data.totalElements,
+                        currentPage: data.number + 1,
+                        illnessSearch: true
+                    })
+                })
+            setTimeout(() => this.setState({"show": false}), 3000);
+            this.setState(this.initialState);
+        } else if(this.state.vaccineSearch) {
+            const info = {
+                page: currentPage,
+                size: this.state.animalsPerPage,
+                vaccine: this.state.vaccine
+            }
+            axios.get("http://localhost:8080/animals/givenVaccineAnimals?page=" + info.page +"&size=" + info.size +"&vaccine=" + info.vaccine)
+                .then(response => response.data)
+                .then((data) => {
+                    this.setState({
+                        animals: data.content,
+                        totalPages: data.totalPages,
+                        totalElements: data.totalElements,
+                        currentPage: data.number + 1,
+                        vaccineSearch: true
+                    })
+                })
+            setTimeout(() => this.setState({"show": false}), 3000);
+            this.setState(this.initialState);
+        } else if(this.state.kindSearch) {
+            const info = {
+                page: currentPage,
+                size: this.state.animalsPerPage,
+                kind: this.state.kind
+            }
+            axios.get("http://localhost:8080/animals/compatibilityKindAnimals?page=" + info.page +"&size=" + info.size +"&kind=" + info.kind)
+                .then(response => response.data)
+                .then((data) => {
+                    this.setState({
+                        animals: data.content,
+                        totalPages: data.totalPages,
+                        totalElements: data.totalElements,
+                        currentPage: data.number + 1,
+                        kindSearch: true
+                    })
+                })
+            setTimeout(() => this.setState({"show": false}), 3000);
+            this.setState(this.initialState);
+        } else if(this.state.relocationSearch) {
+            const info = {
+                page: currentPage,
+                size: this.state.animalsPerPage
+            }
+            axios.get("http://localhost:8080/animals/needRelocationAnimals?page=" + info.page +"&size=" + info.size)
+                .then(response => response.data)
+                .then((data) => {
+                    this.setState({
+                        animals: data.content,
+                        totalPages: data.totalPages,
+                        totalElements: data.totalElements,
+                        currentPage: data.number + 1,
+                        relocationSearch: true
+                    })
+                })
+            setTimeout(() => this.setState({"show": false}), 3000);
+            this.setState(this.initialState);
+        } else if(this.state.warmSearch) {
+            const info = {
+                page: currentPage,
+                size: this.state.animalsPerPage
+            }
+            axios.get("http://localhost:8080/animals/needWarmCellAnimals?page=" + info.page +"&size=" + info.size)
+                .then(response => response.data)
+                .then((data) => {
+                    this.setState({
+                        animals: data.content,
+                        totalPages: data.totalPages,
+                        totalElements: data.totalElements,
+                        currentPage: data.number + 1,
+                        warmSearch: true
+                    })
+                })
+            setTimeout(() => this.setState({"show": false}), 3000);
+            this.setState(this.initialState);
+        } else if(this.state.seasonSearch) {
+            const info = {
+                page: currentPage,
+                size: this.state.animalsPerPage,
+                season: this.state.season,
+                food: this.state.food,
+                seasonSearch: true
+            }
+            axios.get("http://localhost:8080/animals/needFeed?page=" + info.page +"&size=" + info.size+"&feed=" + info.food+"&season=" + info.season)
+                .then(response => response.data)
+                .then((data) => {
+                    this.setState({
+                        animals: data.content,
+                        totalPages: data.totalPages,
+                        totalElements: data.totalElements,
+                        currentPage: data.number + 1
+                    })
+                })
+            setTimeout(() => this.setState({"show": false}), 3000);
+            this.setState(this.initialState);
+        } else if(this.state.childSearch) {
+            const info = {
+                page: currentPage,
+                size: this.state.animalsPerPage
+            }
+            axios.get("http://localhost:8080/animals/expectedChild?page=" + info.page +"&size=" + info.size)
+                .then(response => response.data)
+                .then((data) => {
+                    this.setState({
+                        animals: data.content,
+                        totalPages: data.totalPages,
+                        totalElements: data.totalElements,
+                        currentPage: data.number + 1,
+                        childSearch: true
+                    })
+                })
+            setTimeout(() => this.setState({"show": false}), 3000);
+            this.setState(this.initialState);
+        }
     };
 
     cancelAll = () => {
@@ -270,6 +312,7 @@ export default class AnimalsList extends React.Component {
             "kindSearch" : false,
             "relocationSearch" : false,
             "warmSearch" : false,
+            "childSearch" : false,
             "seasonSearch" : false,
             "vaccineSearch" : false
         });
@@ -284,20 +327,8 @@ export default class AnimalsList extends React.Component {
         if (targetPage > this.state.totalPages) {
             targetPage = this.state.totalPages;
         }
-        if(this.state.ageSearch){
+        if(this.state.ageSearch || this.state.illnessSearch || this.state.vaccineSearch || this.state.kindSearch || this.state.relocationSearch || this.state.warmSearch || this.state.seasonSearch || this.state.childSearch){
             this.submitForm(targetPage)
-        } else if(this.state.illnessSearch){
-            this.submitFormIll(targetPage)
-        } else if(this.state.vaccineSearch) {
-            this.submitFormVaccine(targetPage)
-        } else if(this.state.kindSearch) {
-            this.submitFormKind(targetPage)
-        } else if(this.state.relocationSearch) {
-            this.submitFormRelocation(targetPage)
-        } else if(this.state.warmSearch) {
-            this.submitFormWarm(targetPage)
-        } else if(this.state.seasonSearch) {
-            this.submitFormSeason(targetPage)
         } else {
             this.findAllAnimal(targetPage);
         }
@@ -309,20 +340,8 @@ export default class AnimalsList extends React.Component {
     firstPage = () => {
         let firstPage = 1;
         if (this.state.currentPage > firstPage) {
-            if(this.state.ageSearch){
+            if(this.state.ageSearch || this.state.illnessSearch || this.state.vaccineSearch || this.state.kindSearch || this.state.relocationSearch || this.state.warmSearch || this.state.seasonSearch || this.state.childSearch){
                 this.submitForm(firstPage)
-            } else if(this.state.illnessSearch){
-                this.submitFormIll(firstPage)
-            } else if(this.state.vaccineSearch) {
-                this.submitFormVaccine(firstPage)
-            } else if(this.state.kindSearch) {
-                this.submitFormKind(firstPage)
-            } else if(this.state.relocationSearch) {
-                this.submitFormRelocation(firstPage)
-            } else if(this.state.warmSearch) {
-                this.submitFormWarm(firstPage)
-            } else if(this.state.seasonSearch) {
-                this.submitFormSeason(firstPage)
             } else {
                 this.findAllAnimal(firstPage);
             }
@@ -332,20 +351,8 @@ export default class AnimalsList extends React.Component {
     prevPage = () => {
         let prevPage = 1;
         if (this.state.currentPage > prevPage) {
-            if(this.state.ageSearch){
+            if(this.state.ageSearch || this.state.illnessSearch || this.state.vaccineSearch || this.state.kindSearch || this.state.relocationSearch || this.state.warmSearch || this.state.seasonSearch || this.state.childSearch){
                 this.submitForm(this.state.currentPage - prevPage)
-            } else if(this.state.illnessSearch){
-                this.submitFormIll(this.state.currentPage - prevPage)
-            } else if(this.state.vaccineSearch) {
-                this.submitFormVaccine(this.state.currentPage - prevPage)
-            } else if(this.state.kindSearch) {
-                this.submitFormKind(this.state.currentPage - prevPage)
-            } else if(this.state.relocationSearch) {
-                this.submitFormRelocation(this.state.currentPage - prevPage)
-            } else if(this.state.warmSearch) {
-                this.submitFormWarm(this.state.currentPage - prevPage)
-            } else if(this.state.seasonSearch) {
-                this.submitFormSeason(this.state.currentPage - prevPage)
             } else {
                 this.findAllAnimal(this.state.currentPage - prevPage);
             }
@@ -355,20 +362,8 @@ export default class AnimalsList extends React.Component {
     lastPage = () => {
         let condition = Math.ceil(this.state.totalElements / this.state.animalsPerPage);
         if (this.state.currentPage < condition) {
-            if(this.state.ageSearch){
+            if(this.state.ageSearch || this.state.illnessSearch || this.state.vaccineSearch || this.state.kindSearch || this.state.relocationSearch || this.state.warmSearch || this.state.seasonSearch || this.state.childSearch){
                 this.submitForm(condition)
-            } else if(this.state.illnessSearch){
-                this.submitFormIll(condition)
-            } else if(this.state.vaccineSearch) {
-                this.submitFormVaccine(condition)
-            } else if(this.state.kindSearch) {
-                this.submitFormKind(condition)
-            } else if(this.state.relocationSearch) {
-                this.submitFormRelocation(condition)
-            } else if(this.state.warmSearch) {
-                this.submitFormWarm(condition)
-            } else if(this.state.seasonSearch) {
-                this.submitFormSeason(condition)
             } else {
                 this.findAllAnimal(condition);
             }
@@ -377,20 +372,8 @@ export default class AnimalsList extends React.Component {
 
     nextPage = () => {
         if (this.state.currentPage < Math.ceil(this.state.totalElements / this.state.animalsPerPage)) {
-            if(this.state.ageSearch){
-                this.submitForm(this.state.currentPage + 1)
-            } else if(this.state.illnessSearch){
-                this.submitFormIll(this.state.currentPage + 1)
-            } else if(this.state.vaccineSearch) {
-                this.submitFormVaccine(this.state.currentPage + 1)
-            } else if(this.state.kindSearch) {
-                this.submitFormKind(this.state.currentPage + 1)
-            } else if(this.state.relocationSearch) {
-                this.submitFormRelocation(this.state.currentPage + 1)
-            } else if(this.state.warmSearch) {
-                this.submitFormWarm(this.state.currentPage + 1)
-            } else if(this.state.seasonSearch) {
-                this.submitFormSeason(this.state.currentPage + 1)
+            if(this.state.ageSearch || this.state.illnessSearch || this.state.vaccineSearch || this.state.kindSearch || this.state.relocationSearch || this.state.warmSearch || this.state.seasonSearch || this.state.childSearch){
+                this.submitForm(this.state.currentPage + 1);
             } else {
                 this.findAllAnimal(this.state.currentPage + 1);
             }
@@ -404,20 +387,8 @@ export default class AnimalsList extends React.Component {
                     "show": true,
                     "message": 'Удалено успешно'
                 });
-                if(this.state.ageSearch){
+                if(this.state.ageSearch || this.state.illnessSearch || this.state.vaccineSearch || this.state.kindSearch || this.state.relocationSearch || this.state.warmSearch || this.state.seasonSearch || this.state.childSearch){
                     this.submitForm(this.state.currentPage)
-                } else if(this.state.illnessSearch){
-                    this.submitFormIll(this.state.currentPage)
-                } else if(this.state.vaccineSearch) {
-                    this.submitFormVaccine(this.state.currentPage)
-                } else if(this.state.kindSearch) {
-                    this.submitFormKind(this.state.currentPage)
-                } else if(this.state.relocationSearch) {
-                    this.submitFormRelocation(this.state.currentPage)
-                } else if(this.state.warmSearch) {
-                    this.submitFormWarm(this.state.currentPage)
-                } else if(this.state.seasonSearch) {
-                    this.submitFormSeason(this.state.currentPage)
                 } else {
                     this.findAllAnimal(this.state.currentPage);
                 }
@@ -425,23 +396,8 @@ export default class AnimalsList extends React.Component {
             })
     };
 
-    handleClickOpen = (animalId) => {
-        this.setState({
-            "animalId": animalId,
-            "open": true
-        });
-    };
-
-    handleClose = () => {
-        this.setState({
-            "animalId": 0,
-            "open": false
-        });
-    };
-
-
     render() {
-        const {animals, currentPage, totalPages, age, illness, illnessSearch, ageSearch, vaccine, vaccineSearch, kind, kindSearch, relocationSearch, warmSearch, seasonSearch, season, food} = this.state;
+        const {animals, currentPage, totalPages, age, illness, illnessSearch, ageSearch, vaccine, vaccineSearch, kind, kindSearch, relocationSearch, warmSearch, seasonSearch, season, food, childSearch} = this.state;
 
         return (
             <div>
@@ -454,141 +410,135 @@ export default class AnimalsList extends React.Component {
                             Список Животных
                             <Button size="sm" variant="danger" type="button" onClick={this.cancelAll}>Отменить поиск</Button></h4>
                         </div>
-                        <div><h5>
-                            <br></br>
-                            <br></br>
-                            Поиск требующих тепла данного возраста
-                            <br></br>
-                            <br></br></h5>
-                        </div>
-                        <Form onSubmit={this.submitForm} id="animalWarmAgeFormId">
+                        <Form onSubmit={this.submitFormSeason} id="animalSeasonFormId">
+                            <br></br><br></br>
                             <Form.Row>
-                                <Form.Group as={Col} controlId="formGridAge">
+                                <h5>
+                                    Требуется еда в данном сезоне</h5>
+                                <Form.Group as={Col} md={4} controlId="formGridFood">
+                                    <Form.Control required autoComplete="off"
+                                                  type="test" name="food"
+                                                  value={food} onChange={this.searchChange}
+                                                  placeholder="Введите еду"/>
+                                </Form.Group>
+                                <Form.Group as={Col} md={4} controlId="formGridSeason">
+                                    <Form.Control required as="select"
+                                                  custom onChange={this.searchChange}
+                                                  name="season" value={season}>
+                                        {this.state.seasons.map(season =>
+                                            <option key={season.value} value={season.value}>
+                                                {season.display}
+                                            </option>
+                                        )}
+                                    </Form.Control>
+                                </Form.Group>
+                                <Button size="sm" variant="success"
+                                        disabled={ageSearch === true || illnessSearch === true || vaccineSearch === true || relocationSearch === true || warmSearch === true || kindSearch === true || childSearch === true}
+                                        type="submit">
+                                    <FontAwesomeIcon icon={faSave}/> Искать
+                                </Button>
+                            </Form.Row>
+                        </Form>
+                        <Form onSubmit={this.submitFormAge} id="animalWarmAgeFormId">
+                            <Form.Row>
+                                <h5>
+                                    Поиск требующих тепла данного возраста</h5>
+                                <Form.Group as={Col} md={4} controlId="formGridAge">
                                     <Form.Control required autoComplete="off"
                                                   type="number" name="age"
                                                   min="0"
                                                   value={age} onChange={this.searchChange}
                                                   placeholder="Введите возраст в месяцах"/>
                                 </Form.Group>
+                                <Button size="sm" variant="success"
+                                        disabled={vaccineSearch === true || illnessSearch === true || kindSearch === true || relocationSearch === true || warmSearch === true || seasonSearch === true || childSearch === true}
+                                        type="submit">
+                                    <FontAwesomeIcon icon={faSave}/> Искать
+                                </Button>
                             </Form.Row>
-                            <Button size="sm" variant="success"
-                                    disabled={vaccineSearch === true || illnessSearch === true || kindSearch === true || relocationSearch === true || warmSearch === true || seasonSearch === true}
-                                    type="submit">
-                                <FontAwesomeIcon icon={faSave}/> Искать
-                            </Button>{' '}
                         </Form>
-                        <div><h5>
-                            Поиск животных по болезни
-                            <br></br>
-                            <br></br></h5>
-                        </div>
-                        <Form onSubmit={this.submitFormIll} id="animalIllnessFormId">
-                            <Form.Row>
-                                <Form.Group as={Col} controlId="formGridIllness">
-                                    <Form.Control required autoComplete="off"
-                                                  type="test" name="illness"
-                                                  value={illness} onChange={this.searchChange}
-                                                  placeholder="Введите болезнь"/>
-                                </Form.Group>
-                            </Form.Row>
-                            <Button size="sm" variant="success"
-                                    disabled={ageSearch === true || vaccineSearch === true || kindSearch === true || relocationSearch === true || warmSearch === true || seasonSearch === true}
-                                    type="submit">
-                                <FontAwesomeIcon icon={faSave}/> Искать
-                            </Button>{' '}
-                        </Form>
-                        <div><h5>
-                            Поиск вакцинированных животных
-                            <br></br>
-                            <br></br></h5>
-                        </div>
                         <Form onSubmit={this.submitFormVaccine} id="animalVaccineFormId">
                             <Form.Row>
-                                <Form.Group as={Col} controlId="formGridVaccine">
+                                <h5>
+                                    Поиск вакцинированных животных</h5>
+                                <Form.Group as={Col} md={4} controlId="formGridVaccine">
                                     <Form.Control required autoComplete="off"
                                                   type="test" name="vaccine"
                                                   value={vaccine} onChange={this.searchChange}
                                                   placeholder="Введите название вакцины"/>
                                 </Form.Group>
+                                <Button size="sm" variant="success"
+                                        disabled={ageSearch === true || illnessSearch === true || kindSearch === true || relocationSearch === true || warmSearch === true || seasonSearch === true || childSearch === true}
+                                        type="submit">
+                                    <FontAwesomeIcon icon={faSave}/> Искать
+                                </Button>
                             </Form.Row>
-                            <Button size="sm" variant="success"
-                                    disabled={ageSearch === true || illnessSearch === true || kindSearch === true || relocationSearch === true || warmSearch === true || seasonSearch === true}
-                                    type="submit">
-                                <FontAwesomeIcon icon={faSave}/> Искать
-                            </Button>{' '}
                         </Form>
-                        <div><h5>
-                            Поиск совместимых с
-                            <br></br>
-                            <br></br></h5>
-                        </div>
+                        <Form onSubmit={this.submitFormIll} id="animalIllnessFormId">
+                            <Form.Row>
+                                <h5>
+                                    Поиск животных по болезни</h5>
+                                <Form.Group as={Col} md={4} controlId="formGridIllness">
+                                    <Form.Control required autoComplete="off"
+                                                  type="test" name="illness"
+                                                  value={illness} onChange={this.searchChange}
+                                                  placeholder="Введите болезнь"/>
+                                </Form.Group>
+                                <Button size="sm" variant="success"
+                                        disabled={ageSearch === true || vaccineSearch === true || kindSearch === true || relocationSearch === true || warmSearch === true || seasonSearch === true || childSearch === true}
+                                        type="submit">
+                                    <FontAwesomeIcon icon={faSave}/> Искать
+                                </Button>
+                            </Form.Row>
+                        </Form>
                         <Form onSubmit={this.submitFormKind} id="animalKindFormId">
                             <Form.Row>
-                                <Form.Group as={Col} controlId="formGridKind">
+                                <h5>
+                                    Поиск совместимых с</h5>
+                                <Form.Group as={Col} md={4} controlId="formGridKind">
                                     <Form.Control required autoComplete="off"
                                                   type="test" name="kind"
                                                   value={kind} onChange={this.searchChange}
                                                   placeholder="Введите вид"/>
                                 </Form.Group>
+                                <Button size="sm" variant="success"
+                                        disabled={ageSearch === true || illnessSearch === true || vaccineSearch === true || relocationSearch === true || warmSearch === true || seasonSearch === true || childSearch === true}
+                                        type="submit">
+                                    <FontAwesomeIcon icon={faSave}/> Искать
+                                </Button>
                             </Form.Row>
-                            <Button size="sm" variant="success"
-                                    disabled={ageSearch === true || illnessSearch === true || vaccineSearch === true || relocationSearch === true || warmSearch === true || seasonSearch === true}
-                                    type="submit">
-                                <FontAwesomeIcon icon={faSave}/> Искать
-                            </Button>{' '}
                         </Form>
-                        <div><h5>
-                            Нуждаются в переселении
-                            <br></br>
-                            <br></br></h5>
-                        </div>
-                        <Form onSubmit={this.submitFormRelocation} id="animalRelocationFormId">
-                            <Button size="sm" variant="success"
-                                    disabled={ageSearch === true || illnessSearch === true || vaccineSearch === true || kindSearch === true || warmSearch === true || seasonSearch === true}
-                                    type="submit">
-                                <FontAwesomeIcon icon={faSave}/> Искать
-                            </Button>{' '}
-                        </Form>
-                        <div><h5>
-                            Нуждаются в отапливаемом помещении
-                            <br></br>
-                            <br></br></h5>
-                        </div>
                         <Form onSubmit={this.submitFormWarm} id="animalWarmFormId">
-                            <Button size="sm" variant="success"
-                                    disabled={ageSearch === true || illnessSearch === true || vaccineSearch === true || kindSearch === true || relocationSearch === true || seasonSearch === true}
-                                    type="submit">
-                                <FontAwesomeIcon icon={faSave}/> Искать
-                            </Button>{' '}
-                        </Form>
-                        <div><h5>
-                            Требуется еда в данном сезоне
-                            <br></br>
-                            <br></br></h5>
-                        </div>
-                        <Form onSubmit={this.submitFormSeason} id="animalSeasonFormId">
                             <Form.Row>
-                                <Form.Group as={Col} controlId="formGridFood">
-                                    <Form.Control required autoComplete="off"
-                                                  type="test" name="food"
-                                                  value={food} onChange={this.searchChange}
-                                                  placeholder="Введите еду"/>
-                                </Form.Group>
-                                <Form.Control required as="select"
-                                              custom onChange={this.searchChange}
-                                              name="season" value={season}>
-                                    {this.state.seasons.map(season =>
-                                        <option key={season.value} value={season.value}>
-                                            {season.display}
-                                        </option>
-                                    )}
-                                </Form.Control>
+                                <h5>
+                                    Нуждаются в отапливаемом помещении </h5>
+                                <Button size="sm" variant="success"
+                                        disabled={ageSearch === true || illnessSearch === true || vaccineSearch === true || kindSearch === true || relocationSearch === true || seasonSearch === true || childSearch === true}
+                                        type="submit">
+                                    <FontAwesomeIcon icon={faSave}/> Искать
+                                </Button>
                             </Form.Row>
-                            <Button size="sm" variant="success"
-                                    disabled={ageSearch === true || illnessSearch === true || vaccineSearch === true || relocationSearch === true || warmSearch === true || kindSearch === true}
-                                    type="submit">
-                                <FontAwesomeIcon icon={faSave}/> Искать
-                            </Button>{' '}
+                        </Form>
+                        <Form onSubmit={this.submitFormRelocation} id="animalRelocationFormId">
+                            <Form.Row>
+                                <h5>
+                                    Нуждаются в переселении </h5>
+                                <Button size="sm" variant="success"
+                                        disabled={ageSearch === true || illnessSearch === true || vaccineSearch === true || kindSearch === true || warmSearch === true || seasonSearch === true  || childSearch === true}
+                                        type="submit">
+                                    <FontAwesomeIcon icon={faSave}/> Искать
+                                </Button>
+                            </Form.Row>
+                        </Form>
+                        <Form onSubmit={this.submitFormChild} id="animalChildFormId">
+                            <Form.Row>
+                                <h5>Фертильны </h5>
+                                <Button size="sm" variant="success"
+                                        disabled={ageSearch === true || illnessSearch === true || vaccineSearch === true || kindSearch === true || warmSearch === true || seasonSearch === true || relocationSearch === true}
+                                        type="submit">
+                                    <FontAwesomeIcon icon={faSave}/> Искать
+                                </Button>
+                            </Form.Row>
                         </Form>
                     </Card.Header>
                     <Card.Body>
@@ -683,28 +633,6 @@ export default class AnimalsList extends React.Component {
                             </Card.Footer> : null
                     }
                 </Card>
-                {/*<Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">*/}
-                {/*    <DialogTitle id="form-dialog-title">Введите вес</DialogTitle>*/}
-                {/*    <DialogContent>*/}
-                {/*        <TextField*/}
-                {/*            onChange={this.setWeight}*/}
-                {/*            autoFocus*/}
-                {/*            margin="dense"*/}
-                {/*            id="name"*/}
-                {/*            type="number"*/}
-                {/*            InputProps={{inputProps: {min: 0}}}*/}
-                {/*            fullWidth*/}
-                {/*        />*/}
-                {/*    </DialogContent>*/}
-                {/*    <DialogActions>*/}
-                {/*        <Button onClick={this.handleClose} color="primary">*/}
-                {/*            Отмена*/}
-                {/*        </Button>*/}
-                {/*        <Button onClick={this.addFood.bind(this)} color="primary">*/}
-                {/*            Ок*/}
-                {/*        </Button>*/}
-                {/*    </DialogActions>*/}
-                {/*</Dialog>*/}
             </div>
         );
     }

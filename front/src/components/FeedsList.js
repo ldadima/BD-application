@@ -4,15 +4,10 @@ import axios from 'axios';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faFastBackward,
-    faFastForward,
+    faFastForward, faSearch,
     faStepBackward,
     faStepForward, faTimes
 } from '@fortawesome/free-solid-svg-icons'
-// import DialogTitle from "@material-ui/core/DialogTitle";
-// import DialogContent from "@material-ui/core/DialogContent";
-// import TextField from "@material-ui/core/TextField";
-// import DialogActions from "@material-ui/core/DialogActions";
-// import Dialog from "@material-ui/core/Dialog";
 import MyToast from "./MyToast";
 import {faEdit} from "@fortawesome/free-regular-svg-icons";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
@@ -29,7 +24,8 @@ export default class FeedsList extends React.Component {
             open: false,
             feedId: 0,
             show: false,
-            message: ''
+            message: '',
+            search: false
         };
     }
 
@@ -51,6 +47,32 @@ export default class FeedsList extends React.Component {
             });
     }
 
+    cancelSearch = () => {
+        this.setState({"search" : false});
+        this.findAllFeed(this.state.currentPage);
+    };
+
+    searchData = (currentPage) => {
+        currentPage -= 1;
+        if(isNaN(currentPage)) {
+            currentPage = 0;
+        }
+        if(currentPage > this.state.totalPages) {
+            currentPage = this.state.totalPages;
+        }
+        axios.get("http://localhost:8080/feeds/producedMyself?page="+currentPage+"&size="+this.state.feedsPerPage)
+            .then(response => response.data)
+            .then((data) => {
+                this.setState({
+                    feeds: data.content,
+                    totalPages: data.totalPages,
+                    totalElements: data.totalElements,
+                    currentPage: data.number + 1,
+                    search: true
+                });
+            });
+    };
+
     changePage = event => {
         let targetPage = parseInt(event.target.value);
         if (isNaN(targetPage)) {
@@ -59,7 +81,11 @@ export default class FeedsList extends React.Component {
         if (targetPage > this.state.totalPages) {
             targetPage = this.state.totalPages;
         }
-        this.findAllFeed(targetPage);
+        if (this.state.search) {
+            this.searchData(targetPage);
+        } else {
+            this.findAllFeed(targetPage);
+        }
 
         this.setState({
             [event.target.name]: targetPage
@@ -69,27 +95,43 @@ export default class FeedsList extends React.Component {
     firstPage = () => {
         let firstPage = 1;
         if (this.state.currentPage > firstPage) {
-            this.findAllFeed(firstPage);
+            if (this.state.search) {
+                this.searchData(firstPage);
+            } else {
+                this.findAllFeed(firstPage);
+            }
         }
     };
 
     prevPage = () => {
         let prevPage = 1;
         if (this.state.currentPage > prevPage) {
-            this.findAllFeed(this.state.currentPage - prevPage);
+            if (this.state.search) {
+                this.searchData(this.state.currentPage - prevPage);
+            } else {
+                this.findAllFeed(this.state.currentPage - prevPage);
+            }
         }
     };
 
     lastPage = () => {
         let condition = Math.ceil(this.state.totalElements / this.state.feedsPerPage);
         if (this.state.currentPage < condition) {
-            this.findAllFeed(condition);
+            if (this.state.search) {
+                this.searchData(condition);
+            } else {
+                this.findAllFeed(condition);
+            }
         }
     };
 
     nextPage = () => {
         if (this.state.currentPage < Math.ceil(this.state.totalElements / this.state.feedsPerPage)) {
-            this.findAllFeed(this.state.currentPage + 1);
+            if (this.state.search) {
+                this.searchData(this.state.currentPage + 1);
+            } else {
+                this.findAllFeed(this.state.currentPage + 1);
+            }
         }
     };
 
@@ -100,28 +142,17 @@ export default class FeedsList extends React.Component {
                     "show": true,
                     "message": 'Удалено успешно'
                 });
-                this.findAllFeed(this.state.currentPage);
+                if (this.state.search) {
+                    this.searchData(this.state.currentPage);
+                } else {
+                    this.findAllFeed(this.state.currentPage);
+                }
                 setTimeout(() => this.setState({"show": false}), 3000);
             })
     };
 
-    handleClickOpen = (feedId) => {
-        this.setState({
-            "feedId": feedId,
-            "open": true
-        });
-    };
-
-    handleClose = () => {
-        this.setState({
-            "feedId": 0,
-            "open": false
-        });
-    };
-
-
     render() {
-        const {feeds, currentPage, totalPages} = this.state;
+        const {feeds, currentPage, totalPages, search} = this.state;
 
         return (
             <div>
@@ -131,7 +162,22 @@ export default class FeedsList extends React.Component {
                 <Card style={{ width: '100rem' }} className="text-center" align="center">
                     <Card.Header>
                         <div style={{"float": "left"}}>
-                            Список Еды
+                            <h4>Список Еды</h4>
+                        </div>
+                        <div style={{"float":"right"}}>
+                            <InputGroup size="sm">
+                                <InputGroup.Append>
+                                    <h5>
+                                        Производится самостоятельно</h5>
+                                    <Button size="sm" disabled={search === true} variant="outline-info" type="button"
+                                            onClick={this.searchData}>
+                                        <FontAwesomeIcon icon={faSearch}/>
+                                    </Button>
+                                    <Button size="sm" disabled={search === false} variant="outline-danger" type="button" onClick={this.cancelSearch}>
+                                        <FontAwesomeIcon icon={faTimes} />
+                                    </Button>
+                                </InputGroup.Append>
+                            </InputGroup>
                         </div>
                     </Card.Header>
                     <Card.Body>

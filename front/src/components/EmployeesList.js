@@ -8,11 +8,6 @@ import {
     faStepBackward,
     faStepForward, faTimes
 } from '@fortawesome/free-solid-svg-icons'
-// import DialogTitle from "@material-ui/core/DialogTitle";
-// import DialogContent from "@material-ui/core/DialogContent";
-// import TextField from "@material-ui/core/TextField";
-// import DialogActions from "@material-ui/core/DialogActions";
-// import Dialog from "@material-ui/core/Dialog";
 import MyToast from "./MyToast";
 import {faEdit} from "@fortawesome/free-regular-svg-icons";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
@@ -56,6 +51,8 @@ export default class AnimalsList extends React.Component {
         this.findAllEmployee(this.state.currentPage);
         this.setCountEmployees();
         this.findAllCategories();
+        this.handleChange(null);
+        this.handleEndChange(null);
     }
 
     findAllCategories = () => {
@@ -256,20 +253,6 @@ export default class AnimalsList extends React.Component {
             })
     };
 
-    handleClickOpen = (employeeId) => {
-        this.setState({
-            "employeeId": employeeId,
-            "open": true
-        });
-    };
-
-    handleClose = () => {
-        this.setState({
-            "employeeId": 0,
-            "open": false
-        });
-    };
-
     handleChange = date => {
         this.setState({
             "beginDate": date
@@ -289,14 +272,14 @@ export default class AnimalsList extends React.Component {
             page: this.state.currentPage - 1,
             size: this.state.employeesPerPage,
             kind: this.state.kindAnimal,
-            begin: this.state.beginDate === null ? null : moment(this.state.beginDate).format('YYYY-MM-DD'),
-            end: this.state.endDate === null ? null : moment(this.state.endDate).format('YYYY-MM-DD')
+            begin: this.state.beginDate !== null ?  moment(this.state.beginDate).format('YYYY-MM-DD') : null,
+            end: this.state.endDate !== null ? moment(this.state.endDate).format('YYYY-MM-DD') : null
         }
-        console.log("s ", info);
+        console.log("info ", info);
         axios.put("http://localhost:8080/employees/responsibleAnimalQuery", info)
             .then(response => response.data)
             .then((data) => {
-                console.log("s ", data);
+                console.log("data ", data);
                 this.setState({
                     employees: data.content,
                     totalPages: data.totalPages,
@@ -579,7 +562,7 @@ export default class AnimalsList extends React.Component {
                         employees.length > 0 ?
                             <Card.Footer>
                                 <div style={{"float": "center"}}>
-                                    Всего: {this.state.countEmployees}
+                                    Всего сотрудников: {this.state.countEmployees}
                                 </div>
                                 <div style={{"float": "left"}}>
                                     Страница {currentPage} из {totalPages}

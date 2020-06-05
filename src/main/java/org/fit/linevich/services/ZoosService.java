@@ -12,12 +12,15 @@ import org.fit.linevich.domain.ZooEntity;
 import org.fit.linevich.mapper.CustomDataMapper;
 import org.fit.linevich.repositories.AnimalsRepo;
 import org.fit.linevich.repositories.ZoosRepo;
+import org.fit.linevich.views.Animal;
 import org.fit.linevich.views.Zoo;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -30,6 +33,7 @@ public class ZoosService {
     private final ZoosRepo zoosRepo;
     private final AnimalsRepo animalsRepo;
     private final CustomDataMapper customDataMapper;
+    private final EntityManager entityManager;
 
     public Page<Zoo> showAll(int page, int size){
         Page<ZooEntity> zoos = zoosRepo.findAll(PageRequest.of(page, size,
@@ -84,5 +88,16 @@ public class ZoosService {
                         animalReceiptEntity.getAnimalReceiptEntityPK().getAnimalId() ==
                                 animalId);
         zoosRepo.save(zooEntity);
+    }
+
+    /**
+     * 13-ый запрос
+     */
+    public Page<Zoo> haveChange(int page, int size) {
+        List<ZooEntity> zooEntities = entityManager.createQuery("select distinct  z from AnimalReceiptEntity as ar " +
+                "join ZooEntity as z on z = ar.zooId ", ZooEntity.class)
+                .getResultList();
+        List<Zoo> zoos = customDataMapper.toZooListView(zooEntities);
+        return new PageImpl<>(zoos.subList(page*size, Math.min(size * (page + 1), zoos.size())), PageRequest.of(page, size, Sort.by("id").ascending()), zoos.size());
     }
 }

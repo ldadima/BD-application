@@ -53,6 +53,13 @@ public class ZoosController {
         return ResponseEntity.status(HttpStatus.OK).body(answer);
     }
 
+    @GetMapping("/haveChange")
+    @ApiOperation("Show zoo with changes animal")
+    @ResponseBody
+    public ResponseEntity<Page<Zoo>> haveChange(int page, int size) {
+        return ResponseEntity.ok(zoosService.haveChange(page, size));
+    }
+
     @PostMapping("/createZoo")
     @ApiOperation("Create zoo")
     public ResponseEntity<String> createZoo(@Valid @RequestBody Zoo zoo){

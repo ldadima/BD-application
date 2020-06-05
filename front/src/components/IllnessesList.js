@@ -8,11 +8,6 @@ import {
     faStepBackward,
     faStepForward, faTimes
 } from '@fortawesome/free-solid-svg-icons'
-// import DialogTitle from "@material-ui/core/DialogTitle";
-// import DialogContent from "@material-ui/core/DialogContent";
-// import TextField from "@material-ui/core/TextField";
-// import DialogActions from "@material-ui/core/DialogActions";
-// import Dialog from "@material-ui/core/Dialog";
 import MyToast from "./MyToast";
 import {faEdit} from "@fortawesome/free-regular-svg-icons";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
@@ -105,21 +100,6 @@ export default class IllnessesList extends React.Component {
             })
     };
 
-    handleClickOpen = (illnessId) => {
-        this.setState({
-            "illnessId": illnessId,
-            "open": true
-        });
-    };
-
-    handleClose = () => {
-        this.setState({
-            "illnessId": 0,
-            "open": false
-        });
-    };
-
-
     render() {
         const {illnesses, currentPage, totalPages} = this.state;
 
@@ -131,7 +111,7 @@ export default class IllnessesList extends React.Component {
                 <Card style={{ width: '100rem' }} className="text-center" align="center">
                     <Card.Header>
                         <div style={{"float": "left"}}>
-                            Список Болезней
+                            <h4>Список Болезней</h4>
                         </div>
                     </Card.Header>
                     <Card.Body>

@@ -7,7 +7,9 @@ import org.fit.linevich.mapper.CustomDataMapper;
 import org.fit.linevich.repositories.FeedsRepo;
 import org.fit.linevich.views.Feed;
 import org.fit.linevich.views.FeedNotNeedQuery;
+import org.fit.linevich.views.Zoo;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -66,7 +68,7 @@ public class FeedsService {
     /**
      * 9-ый запрос
      */
-    public List<FeedNotNeedQuery> notNeed(){
+    public Page<FeedNotNeedQuery> notNeed(int page, int size){
         List<FeedNotNeedEntity> feedEntities = entityManager.createNativeQuery("select feeds.name as name, feeds.type as type, odd_sum.sum " +
                 "* 15 + even_sum.sum * 15 as consumption, " +
                 "        feeds.stock * 1000 + feeds.volume_independent_production * 1000 as produce " +
@@ -100,6 +102,7 @@ public class FeedsService {
                 "where (odd_sum.sum * 15 + even_sum.sum * 15) < (feeds.stock * 1000 + feeds" +
                 ".volume_independent_production * 1000);", "feedQueryMapper")
                 .getResultList();
-        return customDataMapper.toFeedQuery(feedEntities);
+        List<FeedNotNeedQuery> needQueries = customDataMapper.toFeedQuery(feedEntities);
+        return new PageImpl<>(needQueries.subList(page*size, Math.min(size * (page + 1), needQueries.size())), PageRequest.of(page, size, Sort.by("id").ascending()), needQueries.size());
     }
 }

@@ -1,11 +1,11 @@
 package org.fit.linevich.services;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.fit.linevich.domain.AnimalCompatibilityEntity;
 import org.fit.linevich.domain.AnimalCompatibilityEntityPK;
 import org.fit.linevich.domain.AnimalEntity;
 import org.fit.linevich.domain.CellsAnimalsEntity;
+import org.fit.linevich.domain.CellsAnimalsEntityPK;
 import org.fit.linevich.domain.EvenDayRationEntity;
 import org.fit.linevich.domain.EvenDayRationEntityPK;
 import org.fit.linevich.domain.FeedEntity;
@@ -125,7 +125,7 @@ public class AnimalService {
         if (animalEntity == null) {
             return;
         }
-        animalEntity.getCellsAnimalsById().add(new CellsAnimalsEntity(cellId, begin, end, heating, animalEntity));
+        animalEntity.getCellsAnimalsById().add(new CellsAnimalsEntity(new CellsAnimalsEntityPK(cellId, animalId), begin, end, heating, animalEntity));
         animalsRepo.save(animalEntity);
     }
 
@@ -134,7 +134,7 @@ public class AnimalService {
         if (animalEntity == null) {
             return;
         }
-        animalEntity.getCellsAnimalsById().removeIf(cellsAnimalsEntity -> cellId == cellsAnimalsEntity.getCellId());
+        animalEntity.getCellsAnimalsById().removeIf(cellsAnimalsEntity -> cellId == cellsAnimalsEntity.getCellsAnimalsEntityPK().getCellId());
         animalsRepo.save(animalEntity);
     }
 
@@ -286,7 +286,7 @@ public class AnimalService {
                         "AnimalEntity a join MedCardEntity m on m.animal = a join CellsAnimalsEntity c on a = c" +
                         ".animalId left " +
                         "join AnimalReceiptEntity ar on ar.animalId = a  where " +
-                        "c.cellId = :cell" +
+                        "c.cellsAnimalsEntityPK.cellId = :cell" +
                         "  and ((not ar.animalId is null  and" +
                         "        ar.dateReceipt = c.dateBegin and" +
                         "        (a.departureDate = c.dateEnd or" +
@@ -445,4 +445,19 @@ public class AnimalService {
                 .getResultList();
     }
 
+    /**
+     * 12-ый запрос
+     */
+    public Page<Animal> expectedChild(int page, int size) {
+        List<AnimalEntity> animalEntities = entityManager.createNativeQuery("select * " +
+                "from animals" +
+                "       join productive_age on kind_animal = kind " +
+                "where (DATE_PART('year', now()) - DATE_PART('year', animals.birthday)) * 12 + " +
+                "      (DATE_PART('month', now()) - DATE_PART('month', animals.birthday)) between productive_age.age " +
+                "and 4*productive_age.age\n" +
+                "  and physical_state = 'Здоров'", AnimalEntity.class)
+                .getResultList();
+        List<Animal> animals = customDataMapper.toAnimalListView(animalEntities);
+        return new PageImpl<>(animals.subList(page*size, Math.min(size * (page + 1), animals.size())), PageRequest.of(page, size, Sort.by("id").ascending()), animals.size());
+    }
 }
