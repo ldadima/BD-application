@@ -1,4 +1,4 @@
-#DB-Zoo-project
+# DB-Zoo-project
 * Задание по самой базе данных лежит в файле `task.pdf`
 * Задание по приложению - `DB-project description.pdf`
 * Схема БД - `Zoo_schema.png`
